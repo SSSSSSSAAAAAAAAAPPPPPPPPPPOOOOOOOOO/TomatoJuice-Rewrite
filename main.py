@@ -26,13 +26,14 @@ except Exception as E:
 class Tomato(commands.Bot):
     def __init__(self):
         super().__init__(
-            command_prefix=config['Prefix'],
+            command_prefix=config['prefixs'],
             intents=discord.Intents.all(),
             help_command=None
         )
+
         self.config = config
 
-        if config['Isdebug']:
+        if config['isdebug']:
             self.load_extension('jishaku')
 
         if 'Cogs' in config:
@@ -43,7 +44,6 @@ class Tomato(commands.Bot):
 
     async def on_message(self, message):
         if not message.author.bot:
-            await check
             await self.process_message(message)
     
     async def on_message_error(self, ctx, error):
@@ -69,4 +69,4 @@ bot = Tomato()
 async def help(ctx):
     await ctx.send('아직 미 구현 이에요!')
 
-bot.run(config['Token'])
+bot.run(config['token'])
