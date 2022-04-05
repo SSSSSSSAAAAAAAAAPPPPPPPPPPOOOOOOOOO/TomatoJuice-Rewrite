@@ -5,6 +5,8 @@ import discord
 import koreanbots
 from discord.ext import commands
 
+from tools.db import D_users as users
+from tools.define import check_User, load_text
 from tools.ui import selectview
 
 try:
