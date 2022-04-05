@@ -5,7 +5,7 @@ import discord
 from discord.ext import commands, tasks
 from rich.logging import RichHandler
 
-from tools.define import config, Juice
+from tools.bot import Juice
 
 logging.basicConfig(
     level=logging.DEBUG,
@@ -24,11 +24,11 @@ class Tomato(Juice):
     def __init__(self):
         super().__init__()
 
-        if config['isdebug']:
+        if self.config['isdebug']:
             self.load_extension('jishaku')
 
-        if 'Cogs' in config:
-            [self.load_extension(f'cogs.{i}') for i in config['Cogs']]
+        if 'Cogs' in self.config:
+            [self.load_extension(f'cogs.{i}') for i in self.config['Cogs']]
 
     async def on_ready(self):
         self.loop.create_task(change_pr())
@@ -49,4 +49,4 @@ async def help(ctx):
     embed = discord.Embed(title='아직 없다ㅋ')
     return await ctx.send(embed=embed)
 
-bot.run(config['token'])
+bot.run(bot.config['token'])
