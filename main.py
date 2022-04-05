@@ -17,7 +17,7 @@ logging.getLogger("discord").setLevel(logging.INFO)
 
 @tasks.loop(seconds=30)
 async def change_pr():
-    status = discord.Game(name=f'{random.choice(bot.command_prefix)}{random.choice(bot.get_command("도움말").aliases)} - {len(bot.guilds)} 서버에서 사용중이에요!')
+    status = discord.Game(name=f'{random.choice(bot.command_prefix)}{random.choice(bot.get_command("help").aliases)} - {len(bot.guilds)} 서버에서 사용중이에요!')
     await bot.change_presence(activity=status)
 
 class Tomato(Juice):
@@ -44,7 +44,7 @@ class Tomato(Juice):
 
 bot = Tomato()
 
-@bot.command()
+@bot.command(aliases=['도움말'])
 async def help(ctx):
     embed = discord.Embed(title='아직 없다ㅋ')
     return await ctx.send(embed=embed)
