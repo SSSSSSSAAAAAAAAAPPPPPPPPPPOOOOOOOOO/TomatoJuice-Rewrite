@@ -1,5 +1,8 @@
 {
   "prefixs": [],
+  "language": "ko_KR",
+  "color": [],
+  "koreanbot": "",
   "isdebug": true,
-  "token": ""
+  "token": "",
 }

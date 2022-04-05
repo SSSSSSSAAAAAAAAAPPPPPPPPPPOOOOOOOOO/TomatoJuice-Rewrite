@@ -7,6 +7,7 @@ import logging
 import sys
 from rich.logging import RichHandler
 from tools.db import users
+from tools.define import config, Juice
 
 logging.basicConfig(
     level=logging.DEBUG,
@@ -16,22 +17,9 @@ logging.basicConfig(
 
 logging.getLogger("discord").setLevel(logging.INFO)
 
-try:
-    with open("config.json", 'r+') as f:
-        config = json.load(f)
-except Exception as E:
-    print(f"Error: {E}")
-    sys.exit(-1)
-
-class Tomato(commands.Bot):
+class Tomato(Juice):
     def __init__(self):
-        super().__init__(
-            command_prefix=config['prefixs'],
-            intents=discord.Intents.all(),
-            help_command=None
-        )
-
-        self.config = config
+        super().__init__()
 
         if config['isdebug']:
             self.load_extension('jishaku')
@@ -41,10 +29,6 @@ class Tomato(commands.Bot):
 
     async def on_ready(self):
         self.loop.create_task(change_pr)
-
-    async def on_message(self, message):
-        if not message.author.bot:
-            await self.process_message(message)
     
     async def on_message_error(self, ctx, error):
         if not isinstance(error, commands.CommandNotFound):
@@ -61,12 +45,13 @@ class Tomato(commands.Bot):
 @tasks.loop(seconds=30)
 async def change_pr():
     status = discord.Game(name=f'{random.choice(bot.command_prefix)}{random.choice(bot.get_command("도움말").aliases)} - {len(bot.guilds)} 서버에서 사용중이에요!')
-    await bot.change_presence(status)
+    await bot.change_presence(activity=status)
 
 bot = Tomato()
 
 @bot.command()
 async def help(ctx):
-    await ctx.send('아직 미 구현 이에요!')
+    embed = discord.Embed(title='아직 없다ㅋ')
+    return await ctx.send(embed=embed)
 
 bot.run(config['token'])

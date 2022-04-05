@@ -10,6 +10,8 @@ db = dbclient.tjdb
 
 D_users = db.users
 
+D_language = db.language
+
 D_customprefix = db.ctprefix
 D_blacklists = db.blacklists
 D_coinposts = db.coins
