@@ -2,7 +2,7 @@
   "prefixs": [],
   "language": "ko_KR",
   "color": [],
-  "koreanbot": "",
+  "koreanbot_token": "",
   "isdebug": true,
   "token": "",
 }
