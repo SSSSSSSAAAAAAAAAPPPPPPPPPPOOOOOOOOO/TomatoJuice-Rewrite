@@ -1,6 +1,7 @@
 import json
 import sys
 
+import discord
 import koreanbots
 from discord.ext import commands
 
