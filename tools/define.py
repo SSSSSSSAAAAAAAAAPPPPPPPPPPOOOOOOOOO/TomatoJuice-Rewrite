@@ -77,8 +77,14 @@ class Juice(commands.Bot):
             if view.value == 'yes':
                 post = {'_id': message.author.id,
                         'money': 0,
+                        'other': {},
                         'locate': 'en_US',
                         }
                 await users.insert_one(post)
+                processed = await load_text(message.author, 'registeruser')
+            elif view.value == 'no':
+                processed = await load_text(message.author, 'cancel')
+            else:
+                processed = await load_text(message.author, 'timeout')
 
             return msg.edit(content=processed, embed=None, view=None)
