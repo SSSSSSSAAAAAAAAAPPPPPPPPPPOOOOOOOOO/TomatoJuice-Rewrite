@@ -2,7 +2,7 @@ import logging
 import random
 
 import discord
-from discord.ext import commands, tasks
+from discord.ext import tasks
 from rich.logging import RichHandler
 
 from tools.bot import Juice
@@ -32,15 +32,6 @@ class Tomato(Juice):
 
     async def on_ready(self):
         self.loop.create_task(change_pr())
-    
-    async def on_message_error(self, ctx, error):
-        if not isinstance(error, commands.CommandNotFound):
-            embed = discord.Embed(title='오류가 발생하였어요!', description=f'''
-            {error} 라는 오류가 발생하였어요!
-            만약 고의가 아니실경우 $문의와 함께 자세한 설명을 해주세요!
-            ''')
-            
-            return await ctx.send(embed=embed)
 
 bot = Tomato()
 

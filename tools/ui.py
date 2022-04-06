@@ -1,4 +1,5 @@
 import discord
+
 from tools.define import load_text
 
 
@@ -26,5 +27,5 @@ class selectview(discord.ui.View):
             self.value = button.value
             self.stop()
         else:
-            _say = await load_text(interaction.user, "nosameuser")
+            _say = await load_text(interaction.user, "N_user")
             await interaction.response.send_message(_say, ephemeral=True)

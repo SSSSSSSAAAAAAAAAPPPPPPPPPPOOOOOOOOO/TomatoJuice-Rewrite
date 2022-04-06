@@ -17,6 +17,7 @@ except Exception as E:
     sys.exit(-1)
 colortmp = config['color']
 
+
 class Juice(commands.Bot):
     def __init__(self):
         super().__init__(
@@ -61,3 +62,12 @@ class Juice(commands.Bot):
                 processed = await load_text(message.author, 'timeout')
 
             return msg.edit(content=processed, embed=None, view=None)
+
+    async def on_message_error(self, ctx, error):
+        if not isinstance(error, commands.CommandNotFound):
+            embed = discord.Embed(title='오류가 발생하였어요!', description=f'''
+            {error} 라는 오류가 발생하였어요!
+            만약 고의가 아니실경우 $문의와 함께 자세한 설명을 해주세요!
+            ''')
+
+            return await ctx.send(embed=embed)
