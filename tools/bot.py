@@ -27,7 +27,7 @@ class Juice(commands.Bot):
                 run_task=True,
             )
 
-        self.color = '#{:X}{:X}{:X}'.format(colortmp[0], colortmp[1], colortmp[2]),
+        self.color = '#%02x%02x%02x' % (colortmp[0], colortmp[1], colortmp[2]),
 
     def request_permission(self, permission_name: str):
         embed = discord.Embed(title="길드에 권한이 없는거 같아요!", description=f"{permission_name} 권한이 없어서 명령어를 실행할수 없어요!",
