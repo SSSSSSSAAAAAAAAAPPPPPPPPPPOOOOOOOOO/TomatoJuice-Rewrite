@@ -3,7 +3,8 @@ from typing import Union
 import discord
 
 from tools.config import config
-from tools.db import D_language as lang, D_guilds
+from tools.db import D_guilds
+from tools.db import D_language as lang
 from tools.db import D_users as users
 
 
