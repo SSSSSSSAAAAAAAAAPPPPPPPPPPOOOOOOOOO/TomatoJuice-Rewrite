@@ -27,8 +27,7 @@ class Juice(commands.Bot):
                 run_task=True,
             )
 
-        self.color = hex(int(bytes.hex(struct.pack('BBB',*tuple(config['color']))), 16))
-
+        self.color = int(bytes.hex(struct.pack('BBB', *tuple(config['color']))), 16)
 
     def request_permission(self, permission_name: str):
         embed = discord.Embed(title="길드에 권한이 없는거 같아요!", description=f"{permission_name} 권한이 없어서 명령어를 실행할수 없어요!",
