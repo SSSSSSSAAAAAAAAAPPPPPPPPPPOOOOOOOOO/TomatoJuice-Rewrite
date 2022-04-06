@@ -35,6 +35,7 @@ class Juice(commands.Bot):
         return embed
 
     async def on_message(self, message):
+        return await self.process_commands(message)
         if not await check_User(message.author):
             embed = discord.Embed(
                 title=f'{self.user.name}를 사용하시려면 아래의 약관에 동의를 하셔야해요!',
@@ -52,7 +53,7 @@ class Juice(commands.Bot):
                         'locate': 'en_US',
                         }
                 await D_users.insert_one(post)
-                processed = await load_text(message.author, 'registeruser')
+                processed = None
                 await message.channel.send(embed=discord.Embed(title='Please change language!',
                                                                description='Your Language is Now en_Us\nPlease change your country language',
                                                                color=self.color))
@@ -64,8 +65,6 @@ class Juice(commands.Bot):
                 processed = await load_text(message.author, 'm_timeout')
 
             await msg.edit(content=processed, embed=None, view=None)
-
-        return await self.process_commands(message)
 
     async def on_message_error(self, ctx, error):
         if isinstance(error, commands.NotOwner):
