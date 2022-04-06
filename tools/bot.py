@@ -3,7 +3,9 @@ import koreanbots
 from discord.ext import commands
 
 from tools.config import config
-from tools.define import load_text
+from tools.db import D_users
+from tools.define import load_text, check_User
+from tools.ui import selectview
 
 colortmp = config['color']
 
@@ -32,30 +34,32 @@ class Juice(commands.Bot):
         return embed
 
     async def on_message(self, message):
-        # if not await check_User(message.author):
-        # embed = discord.Embed(
-        #    title=f'{self.user.name}를 사용하시려면 아래의 약관에 동의를 하셔야해요!',
-        #    description='봇 명령어의 내용이 일부 수집될수 있습니다.\n사용자의 아이디가 유저 DB에 등록됩니다.',
-        #    color=self.color
-        # )
-        # view = selectview(message.author, [await load_text(message.author, 'yes'), await load_text(message.author, 'no')])
-        # msg = await message.channel.send(embed=embed, view=view)
-        # await view.wait()
-        # if view.value == 'yes':
-        #    post = {'_id': message.author.id,
-        #            'money': 0,
-        #            'other': {},
-        #            'locate': 'en_US',
-        #            }
-        #    await users.insert_one(post)
-        #    processed = await load_text(message.author, 'registeruser')
-        #    await message.channel.send(embed=discord.Embed(title='Please change language!', description='Your Language is Now en_Us\nPlease change your country language', color=self.color))
-        # elif view.value == 'no':
-        #    processed = await load_text(message.author, 'm_cancel')
-        # else:
-        #    processed = await load_text(message.author, 'm_timeout')
-        #
-        # await msg.edit(content=processed, embed=None, view=None)
+        if not await check_User(message.author):
+            embed = discord.Embed(
+               title=f'{self.user.name}를 사용하시려면 아래의 약관에 동의를 하셔야해요!',
+               description='봇 명령어의 내용이 일부 수집될수 있습니다.\n사용자의 아이디가 유저 DB에 등록됩니다.',
+               color=self.color
+            )
+            view = selectview(message.author, [await load_text(message.author, 'yes'), await load_text(message.author, 'no')])
+            msg = await message.channel.send(embed=embed, view=view)
+            await view.wait()
+            if view.value == 'yes':
+               post = {'_id': message.author.id,
+                       'money': 0,
+                       'other': {},
+                       'locate': 'en_US',
+                       }
+               await D_users.insert_one(post)
+               processed = await load_text(message.author, 'registeruser')
+               await message.channel.send(embed=discord.Embed(title='Please change language!', description='Your Language is Now en_Us\nPlease change your country language', color=self.color))
+
+            elif view.value == 'no':
+               processed = await load_text(message.author, 'm_cancel')
+
+            else:
+               processed = await load_text(message.author, 'm_timeout')
+
+            await msg.edit(content=processed, embed=None, view=None)
 
         return await self.process_commands(message)
 
