@@ -2,6 +2,7 @@ from typing import Union
 
 import discord
 
+from tools.config import config
 from tools.db import D_language as lang, D_guilds
 from tools.db import D_users as users
 
@@ -33,7 +34,7 @@ async def load_locate(user: Union[discord.Member, discord.User]):
 
 
 async def load_text(user: Union[discord.Member, discord.User], short_t: str):
-    locate = (await load_locate(user)) or "en_US"
+    locate = (await load_locate(user)) or config['language']
     text = await lang.find_one({"_id": short_t})
     if text is None:
         return None

@@ -55,7 +55,7 @@ class Juice(commands.Bot):
                 await D_users.insert_one(post)
                 processed = None
                 await message.channel.send(embed=discord.Embed(title='Please change language!',
-                                                               description='Your Language is Now en_Us\nPlease change your country language',
+                                                               description='Your Language is Now en_US\nPlease change your country language',
                                                                color=self.color))
 
             elif view.value == 'no':
