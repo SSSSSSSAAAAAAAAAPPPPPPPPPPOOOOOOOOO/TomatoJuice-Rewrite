@@ -27,7 +27,7 @@ class guild(commands.Cog):
         embed.add_field(name='봇 수', value=len(guild.members)-users)
         embed.add_field(name='서버 역할 수', value=len(guild.roles))
         embed.add_field(name='서버 채널 수', value=len(guild.channels))
-        embed.set_thumbnail(url=guild.icon_url)
+        embed.set_thumbnail(url=guild.icon.url)
         
         return await ctx.send(embed=embed)
 
