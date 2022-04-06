@@ -130,5 +130,7 @@ dmypy.json
 
 #Discord Bot Custom
 config.json
+config.toml
+config.yaml
 .vscode/
 .idea/
