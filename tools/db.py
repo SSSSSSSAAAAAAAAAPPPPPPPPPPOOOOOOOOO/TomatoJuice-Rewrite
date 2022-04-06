@@ -16,5 +16,7 @@ D_customprefix = db.ctprefix
 D_blacklists = db.blacklists
 D_coinposts = db.coins
 
+D_commands = db.commands
+
 D_u_cb = db.user_chatbot
 D_guilds = db.guilds
