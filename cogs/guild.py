@@ -27,6 +27,8 @@ class guild(commands.Cogs):
         embed.add_field(name='봇 수', value=len(guild.members)-users, inline=False)
         embed.add_field(name='서버 역할 수', value=len(guild.roles), inline=False)
         embed.add_field(name='서버 채널 수', value=len(guild.channels), inline=False)
-        
+
         return await ctx.send(embed=embed)
-        
+
+def setup(bot):
+    bot.add_cog(guild(bot))
