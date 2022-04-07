@@ -45,11 +45,12 @@ class Juice(commands.Bot):
                     description=await load_text(message.author, 'Q_register_desc'),
                     color=self.color
                 )
+                yon = [await load_text(message.author, 'yes'), await load_text(message.author, 'no')]
                 view = selectview(message.author,
-                                  [await load_text(message.author, 'yes'), await load_text(message.author, 'no')])
+                                  yon)
                 msg = await message.channel.send(embed=embed, view=view)
                 await view.wait()
-                if view.value == 'yes':
+                if view.value == yon[0]:
                     post = {'_id': message.author.id,
                             "economy": {
                                 "money": 0,
@@ -66,7 +67,7 @@ class Juice(commands.Bot):
                         color=self.color)
                     )
 
-                elif view.value == 'no':
+                elif view.value == yon[1]:
                     processed = await load_text(message.author, 'D_cancel'), False
 
                 else:
