@@ -67,10 +67,10 @@ class Juice(commands.Bot):
                     )
 
                 elif view.value == 'no':
-                    processed = await load_text(message.author, 'm_cancel'), False
+                    processed = await load_text(message.author, 'D_cancel'), False
 
                 else:
-                    processed = await load_text(message.author, 'm_timeout'), False
+                    processed = await load_text(message.author, 'D_timeout'), False
 
                 await msg.edit(content=processed[0], embed=None, view=None)
 
