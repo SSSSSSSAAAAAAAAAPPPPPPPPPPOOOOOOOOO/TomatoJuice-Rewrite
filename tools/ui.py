@@ -29,3 +29,54 @@ class selectview(discord.ui.View):
         else:
             _say = await load_text(interaction.user, "N_user")
             await interaction.response.send_message(_say, ephemeral=True)
+
+class Pager(discord.ui.View):
+    def __init__(self, ctx, msg, embed):
+        super().__init__(timeout=180)
+        self.page = 0
+        self.ctx = ctx
+        self.msg = msg
+        self.embed = embed
+
+    @discord.ui.Button(label="⬅", style=discord.ButtonStyle.red, disabled=True)
+    async def on_left(self, button: discord.ui.Button, interaction: discord.Interaction):
+        if interaction.user == self.ctx.author:
+            if self.page + 1 == 1:
+                _say = await load_text(interaction.user, "N_page")
+                await interaction.response.send_message(_say, ephemeral=True)
+                self.children[0].disabled = True
+                self.children[1].disabled = False
+                await self.msg.edit(view=self)
+            else:
+                self.page -= 1
+                if self.page + 1 == 1:
+                    self.children[0].disabled = True
+                    self.children[1].disabled = False
+                else:
+                    self.children[1].disabled = False
+
+                await self.msg.edit(embed=self.embed[self.page], view=self)
+        else:
+            _say = await load_text(interaction.user, "N_user")
+            await interaction.response.send_message(_say, ephemeral=True)
+
+    @discord.ui.Button(label="➡", style=discord.ButtonStyle.red, disabled=False)
+    async def on_right(self, button: discord.ui.Button, interaction: discord.Interaction):
+        if interaction.user == self.ctx.author:
+            if self.page + 1 == len(self.embed):
+                _say = await load_text(interaction.user, "N_page")
+                await interaction.response.send_message(_say, ephemeral=True)
+                self.children[1].disabled = True
+                self.children[0].disabled = False
+                await self.msg.edit(view=self)
+            else:
+                self.page += 1
+                if self.page + 1 == len(self.embed):
+                    self.children[1].disabled = True
+                    self.children[0].disabled = False
+                else:
+                    self.children[0].disabled = False
+                await self.msg.edit(embed=self.embed[self.page], view=self)
+        else:
+            _say = await load_text(interaction.user, "N_user")
+            await interaction.response.send_message(_say, ephemeral=True)
