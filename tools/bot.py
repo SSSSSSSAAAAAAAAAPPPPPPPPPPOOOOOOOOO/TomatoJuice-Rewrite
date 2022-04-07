@@ -82,7 +82,7 @@ class Juice(commands.Bot):
 
     async def on_message_error(self, ctx, error):
         if isinstance(error, commands.NotOwner):
-            await ctx.send(await load_text(ctx.author, 'N_owner'))
+            await ctx.send(await load_text(ctx.author, 'N_admin'))
 
         elif isinstance(error, commands.GuildNotFound):
             await ctx.send(await load_text(ctx.author, 'NF_guild'))
@@ -91,4 +91,4 @@ class Juice(commands.Bot):
             return
 
         else:
-            await ctx.send((await load_text(ctx.author, 'Unable_Error')) + f'```{error}```')
+            await ctx.send((await load_text(ctx.author, 'error')) + f'```{error}```')
