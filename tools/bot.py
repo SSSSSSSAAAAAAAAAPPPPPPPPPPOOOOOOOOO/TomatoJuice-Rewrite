@@ -34,6 +34,19 @@ class Juice(commands.Bot):
                               color=self.color)
         return embed
 
+    async def on_message_error(self, ctx, error):
+        if isinstance(error, commands.NotOwner):
+            await ctx.send(await load_text(ctx.author, 'N_admin'))
+
+        elif isinstance(error, commands.GuildNotFound):
+            await ctx.send(await load_text(ctx.author, 'NF_guild'))
+
+        elif isinstance(error, commands.CommandNotFound):
+            return
+
+        else:
+            await ctx.send((await load_text(ctx.author, 'error')) + f'```{error}```')
+
     async def process_commands(self, message):
         if message.author.bot:
             return
@@ -79,16 +92,3 @@ class Juice(commands.Bot):
                     return
 
         await self.invoke(ctx)
-
-    async def on_message_error(self, ctx, error):
-        if isinstance(error, commands.NotOwner):
-            await ctx.send(await load_text(ctx.author, 'N_admin'))
-
-        elif isinstance(error, commands.GuildNotFound):
-            await ctx.send(await load_text(ctx.author, 'NF_guild'))
-
-        elif isinstance(error, commands.CommandNotFound):
-            return
-
-        else:
-            await ctx.send((await load_text(ctx.author, 'error')) + f'```{error}```')

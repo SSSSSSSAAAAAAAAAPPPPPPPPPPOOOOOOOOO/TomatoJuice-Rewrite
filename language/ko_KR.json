@@ -4,6 +4,7 @@
   "D_confirm": "확인 되었어요!",
   "D_cancel": "취소 되었어요..",
   "D_timeout": "시간 초과 되었어요..",
+  "D_command_info": " 커맨드 정보",
   "Q_confirm": "확인 하시겠어요?",
   "Q_cancel": "취소 하시겠어요?",
   "N_admin": "봇 관리자가 아닌거 같아요!",

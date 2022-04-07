@@ -40,10 +40,9 @@ class Tomato(Juice):
 bot = Tomato()
 
 
-@bot.command(aliases=['도움말'])
-async def help(ctx):
-    embed = discord.Embed(title='아직 없다ㅋ')
-    return await ctx.send(embed=embed)
+@bot.command(aliases=['도움말'], extras={'': '도움말을 보여줍니다.'})
+async def help(ctx, *, command: str = None):
+    pass
 
 
 bot.run(bot.config['token'])
