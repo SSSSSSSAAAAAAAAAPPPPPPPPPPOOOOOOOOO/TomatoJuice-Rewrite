@@ -30,6 +30,28 @@ class selectview(discord.ui.View):
             _say = await load_text(interaction.user, "N_user")
             await interaction.response.send_message(_say, ephemeral=True)
 
+
+class SelectElement(discord.ui.Select):
+    def __init__(self, user, elements, ui):
+        self.user = user
+        self.elements = elements
+        self.value = None
+        self.ui = ui
+        super().__init__(
+            min_values=1, max_values=1,
+            options=[discord.SelectOption(label=i) for i in elements]
+        )
+
+    async def callback(self, interaction):
+        if interaction.user.id != self.user.id:
+            _say = await load_text(interaction.user, "N_user")
+            await interaction.response.send_message(_say, ephemeral=True)
+        else:
+            await self.ui.msg.edit(embed=self.ui.embed[self.elements.index(self.values[0])],
+                                   view=self)
+            self.ui.page = self.elements.index(self.values[0])
+
+
 class Pager(discord.ui.View):
     def __init__(self, ctx, msg, embed):
         super().__init__(timeout=180)
@@ -37,6 +59,8 @@ class Pager(discord.ui.View):
         self.ctx = ctx
         self.msg = msg
         self.embed = embed
+        self.item = SelectElement(ctx.author, [i.title for i in embed], self)
+        self.add_item(self.item)
 
     @discord.ui.button(label="⬅", style=discord.ButtonStyle.red, disabled=True)
     async def on_left(self, button: discord.ui.Button, interaction: discord.Interaction):
@@ -56,6 +80,14 @@ class Pager(discord.ui.View):
                     self.children[1].disabled = False
 
                 await self.msg.edit(embed=self.embed[self.page], view=self)
+        else:
+            _say = await load_text(interaction.user, "N_user")
+            await interaction.response.send_message(_say, ephemeral=True)
+
+    @discord.ui.button(label="⬛", style=discord.ButtonStyle.red, disabled=False)
+    async def on_stop(self, button: discord.ui.Button, interaction: discord.Interaction):
+        if interaction.user == self.ctx.author:
+            self.stop()
         else:
             _say = await load_text(interaction.user, "N_user")
             await interaction.response.send_message(_say, ephemeral=True)
