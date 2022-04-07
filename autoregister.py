@@ -21,7 +21,7 @@ if __init__ == "__main__":
     locate_file = input('>')
 
     try:
-        with open(locate_file + '.json', 'r') as f:
+        with open('language' + locate_file + '.json', 'r') as f:
             data = json.load(f)
     except Exception as e:
         print(e)
