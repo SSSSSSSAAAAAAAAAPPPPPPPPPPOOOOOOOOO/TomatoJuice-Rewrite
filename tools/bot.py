@@ -37,43 +37,45 @@ class Juice(commands.Bot):
     async def process_commands(self, message):
         if message.author.bot:
             return
-
-        if not await check_User(message.author):
-            embed = discord.Embed(
-                title=(await load_text(message.author, 'Q_register_title')).format(self.user.name),
-                description=await load_text(message.author, 'Q_register_desc'),
-                color=self.color
-            )
-            view = selectview(message.author,
-                              [await load_text(message.author, 'yes'), await load_text(message.author, 'no')])
-            msg = await message.channel.send(embed=embed, view=view)
-            await view.wait()
-            if view.value == 'yes':
-                post = {'_id': message.author.id,
-                        "economy": {
-                            "money": 0,
-                            "cooltime": 0,
-                        },
-                        'other': {},
-                        'locate': config['language'],
-                        }
-                await D_users.insert_one(post)
-                processed = await load_text(message.author, "D_register_done")
-                await message.channel.send(embed=discord.Embed(
-                    title=await load_text(message.author, 'Q_language_info_title'),
-                    description=(await load_text(message.author, "Q_language_info_desc")).format(post['locate']),
-                    color=self.color)
-                )
-
-            elif view.value == 'no':
-                processed = await load_text(message.author, 'm_cancel')
-
-            else:
-                processed = await load_text(message.author, 'm_timeout')
-
-            await msg.edit(content=processed, embed=None, view=None)
-
         ctx = await self.get_context(message, cls=commands.Context)
+        if ctx.command is not None:
+            if not await check_User(message.author):
+                embed = discord.Embed(
+                    title=(await load_text(message.author, 'Q_register_title')).format(self.user.name),
+                    description=await load_text(message.author, 'Q_register_desc'),
+                    color=self.color
+                )
+                view = selectview(message.author,
+                                  [await load_text(message.author, 'yes'), await load_text(message.author, 'no')])
+                msg = await message.channel.send(embed=embed, view=view)
+                await view.wait()
+                if view.value == 'yes':
+                    post = {'_id': message.author.id,
+                            "economy": {
+                                "money": 0,
+                                "cooltime": 0,
+                            },
+                            'other': {},
+                            'locate': config['language'],
+                            }
+                    await D_users.insert_one(post)
+                    processed = await load_text(message.author, "D_register_done"), True
+                    await message.channel.send(embed=discord.Embed(
+                        title=await load_text(message.author, 'Q_language_info_title'),
+                        description=(await load_text(message.author, "Q_language_info_desc")).format(post['locate']),
+                        color=self.color)
+                    )
+
+                elif view.value == 'no':
+                    processed = await load_text(message.author, 'm_cancel'), False
+
+                else:
+                    processed = await load_text(message.author, 'm_timeout'), False
+
+                await msg.edit(content=processed[0], embed=None, view=None)
+
+                if not processed[1]:
+                    return
 
         await self.invoke(ctx)
 
