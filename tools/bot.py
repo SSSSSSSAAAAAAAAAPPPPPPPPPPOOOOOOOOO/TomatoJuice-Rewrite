@@ -34,12 +34,14 @@ class Juice(commands.Bot):
                               color=self.color)
         return embed
 
-    async def on_message(self, message):
-        return await self.process_commands(message)
+    async def process_commands(self, message):
+        if message.author.bot:
+            return
+
         if not await check_User(message.author):
             embed = discord.Embed(
-                title=f'{self.user.name}를 사용하시려면 아래의 약관에 동의를 하셔야해요!',
-                description='봇 명령어의 내용이 일부 수집될수 있습니다.\n사용자의 아이디가 유저 DB에 등록됩니다.',
+                title=(await load_text(message.author, 'Q_register_title')).format(self.user.name),
+                description=await load_text(message.author, 'Q_register_desc'),
                 color=self.color
             )
             view = selectview(message.author,
@@ -48,15 +50,20 @@ class Juice(commands.Bot):
             await view.wait()
             if view.value == 'yes':
                 post = {'_id': message.author.id,
-                        'money': 0,
+                        "economy": {
+                            "money": 0,
+                            "cooltime": 0,
+                        },
                         'other': {},
-                        'locate': 'en_US',
+                        'locate': config['language'],
                         }
                 await D_users.insert_one(post)
-                processed = None
-                await message.channel.send(embed=discord.Embed(title='Please change language!',
-                                                               description='Your Language is Now en_US\nPlease change your country language',
-                                                               color=self.color))
+                processed = await load_text(message.author, "D_register_done")
+                await message.channel.send(embed=discord.Embed(
+                    title=await load_text(message.author, 'Q_language_info_title'),
+                    description=(await load_text(message.author, "Q_language_info_desc")).format(post['locate']),
+                    color=self.color)
+                )
 
             elif view.value == 'no':
                 processed = await load_text(message.author, 'm_cancel')
@@ -65,6 +72,10 @@ class Juice(commands.Bot):
                 processed = await load_text(message.author, 'm_timeout')
 
             await msg.edit(content=processed, embed=None, view=None)
+
+        ctx = await self.get_context(message, cls=commands.Context)
+
+        await self.invoke(ctx)
 
     async def on_message_error(self, ctx, error):
         if isinstance(error, commands.NotOwner):

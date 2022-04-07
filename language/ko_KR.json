@@ -1,0 +1,13 @@
+{
+  "D_confirm": "확인 되었어요!",
+  "D_cancel": "취소 되었어요!",
+  "Q_confirm": "확인 하시겠어요?",
+  "Q_cancel": "취소 하시겠어요?",
+  "N_admin": "봇 관리자가 아닌거 같아요!",
+  "NS_user": "명령어를 실행한 유저가 아닌거 같아요!",
+  "Q_register_title": "{} 를(을) 사용하시려면 아래의 약관에 동의를 하셔야해요!",
+  "Q_register_desc": "봇 명령어의 내용이 일부 수집될수 있습니다.\n사용자의 아이디가 유저 DB에 등록됩니다.",
+  "D_register_done": "가입 되셨습니다!",
+  "Q_language_info_title": "언어가 바뀌었어요!",
+  "Q_language_info_desc": "현재 당신의 언어는 {} 입니다."
+}
