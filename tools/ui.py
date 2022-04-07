@@ -47,9 +47,8 @@ class SelectElement(discord.ui.Select):
             _say = await load_text(interaction.user, "N_user")
             await interaction.response.send_message(_say, ephemeral=True)
         else:
-            await self.ui.msg.edit(embed=self.ui.embed[self.elements.index(self.values[0])],
-                                   view=self)
             self.ui.page = self.elements.index(self.values[0])
+            await self.ui.msg.edit(embed=self.ui.embed[self.ui.page], view=self)
 
 
 class Pager(discord.ui.View):
