@@ -1,5 +1,6 @@
 import asyncio
 import json
+import os
 import sys
 
 from tools.db import D_language as lang
@@ -17,8 +18,9 @@ async def main(data, locate_file):
 
 
 locate_file = input('>')
+
 try:
-    with open('language' + locate_file + '.json', 'r') as f:
+    with open(os.path.join(os.getcwd(), 'language', locate_file+'.json'), 'r+') as f:
         data = json.load(f)
 except Exception as e:
     print(e)
