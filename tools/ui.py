@@ -38,7 +38,7 @@ class Pager(discord.ui.View):
         self.msg = msg
         self.embed = embed
 
-    @discord.ui.Button(label="⬅", style=discord.ButtonStyle.red, disabled=True)
+    @discord.ui.button(label="⬅", style=discord.ButtonStyle.red, disabled=True)
     async def on_left(self, button: discord.ui.Button, interaction: discord.Interaction):
         if interaction.user == self.ctx.author:
             if self.page + 1 == 1:
@@ -60,7 +60,7 @@ class Pager(discord.ui.View):
             _say = await load_text(interaction.user, "N_user")
             await interaction.response.send_message(_say, ephemeral=True)
 
-    @discord.ui.Button(label="➡", style=discord.ButtonStyle.red, disabled=False)
+    @discord.ui.button(label="➡", style=discord.ButtonStyle.red, disabled=False)
     async def on_right(self, button: discord.ui.Button, interaction: discord.Interaction):
         if interaction.user == self.ctx.author:
             if self.page + 1 == len(self.embed):
