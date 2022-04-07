@@ -11,7 +11,7 @@ async def main(data, locate_file):
         tmp = await lang.find_one({'_id': i})
         tmp: dict
         if tmp is None:
-            await lang.insert_one({'_id': i, 'name': data[i]})
+            await lang.insert_one({'_id': i, locate_file: data[i]})
         else:
             tmp[locate_file] = data[i]
             await lang.update_one({'_id': i}, {'$set': tmp})
