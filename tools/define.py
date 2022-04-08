@@ -15,6 +15,10 @@ async def check_User(user: Union[discord.Member, discord.User]):
     else:
         return True
 
+def chunks(lst: list, n: int):
+    for i in range(0, len(lst), n):
+        yield lst[i:i + n]
+
 async def checkPermission(ctx, permission_name: str):
     tmp = await D_guilds.find_one({"_id": ctx.guild.id})
     if tmp is None:
