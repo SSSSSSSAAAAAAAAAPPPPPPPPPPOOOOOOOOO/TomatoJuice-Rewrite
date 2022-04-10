@@ -8,19 +8,19 @@ from tools.db import D_language as lang
 
 async def main(data, locate_file):
     for i in data.keys():
-        tmp = await lang.find_one({'_id': i})
+        tmp = await lang.find_one({"_id": i})
         tmp: dict
         if tmp is None:
-            await lang.insert_one({'_id': i, locate_file: data[i]})
+            await lang.insert_one({"_id": i, locate_file: data[i]})
         else:
             tmp[locate_file] = data[i]
-            await lang.update_one({'_id': i}, {'$set': tmp})
+            await lang.update_one({"_id": i}, {"$set": tmp})
 
 
-locate_file = input('>')
+locate_file = input(">")
 
 try:
-    with open(os.path.join(os.getcwd(), 'language', locate_file+'.json'), 'r+') as f:
+    with open(os.path.join(os.getcwd(), "language", locate_file + ".json"), "r+") as f:
         data = json.load(f)
 except Exception as e:
     print(e)

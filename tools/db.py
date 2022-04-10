@@ -1,7 +1,7 @@
-'''
+"""
 Database Load tool
 example) from tools.db import YOURDB
-'''
+"""
 import motor.motor_asyncio as motor
 
 dbclient = motor.AsyncIOMotorClient("localhost", 27017)

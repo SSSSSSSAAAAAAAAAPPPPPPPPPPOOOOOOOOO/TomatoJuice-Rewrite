@@ -1,7 +1,7 @@
 from discord.ext import commands
 
 from tools.db import D_commands, D_customprefix
-from tools.define import checkPermission
+from tools.define import checkPermission, ad_help_formater
 
 
 async def returnresult(self):
@@ -16,7 +16,7 @@ class admin(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.Cog.listener(name='on_command_completion')
+    @commands.Cog.listener(name="on_command_completion")
     async def record(self, ctx: commands.Context):
         cmd = ctx.command.qualified_name
         if ctx.author.id not in self.bot.owner_ids:
@@ -28,23 +28,22 @@ class admin(commands.Cog):
                 await D_commands.insert_one(post)
 
     @commands.command(
-        name='customprefix',
-        aliases=['cp', 'prefix'],
-        description='접두사 설정',
+        name="customprefix",
+        aliases=["cp", "prefix"],
+        extras=ad_help_formater(["prefix"]),
     )
     async def customprefix(self, ctx, *, prefix: str):
-        if await checkPermission(ctx, 'customprefix'):
+        if await checkPermission(ctx, "customprefix"):
             if prefix:
                 await D_customprefix.update_one(
-                    {"_id": ctx.guild.id},
-                    {"$set": {"prefix": prefix}},
-                    upsert=True
+                    {"_id": ctx.guild.id}, {"$set": {"prefix": prefix}}, upsert=True
                 )
-                await ctx.send(f'접두사가 {prefix}로 설정되었습니다.')
+                await ctx.send(f"접두사가 {prefix}로 설정되었습니다.")
             else:
-                await ctx.send('접두사를 입력해주세요.')
+                await ctx.send("접두사를 입력해주세요.")
         else:
-            await ctx.send(embed=self.bot.request_permission('customprefix'))
+            await ctx.send(embed=self.bot.request_permission("customprefix"))
+
 
 def setup(bot):
     bot.add_cog(admin(bot))

@@ -1,6 +1,9 @@
 {
   "yes": "네",
   "no": "아니오",
+  "command": "명령어",
+  "info": "정보",
+  "prefix": "접두사",
   "D_confirm": "확인 되었어요!",
   "D_cancel": "취소 되었어요..",
   "D_timeout": "시간 초과 되었어요..",
@@ -17,5 +20,6 @@
   "Q_language_info_title": "언어가 바뀌었어요!",
   "Q_language_info_desc": "현재 당신의 언어는 {} 입니다.",
   "error": "오류가 발생했어요!",
-  "NotFound": "찾지 못했어요!"
+  "NotFound": "찾지 못했어요!",
+  "C_D_help": "명령어의 도움을 찾아주는 신박한 명령어에요!"
 }

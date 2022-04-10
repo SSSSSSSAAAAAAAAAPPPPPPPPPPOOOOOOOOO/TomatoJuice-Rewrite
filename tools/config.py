@@ -5,23 +5,23 @@ import sys
 import tomli
 import yaml
 
-if os.path.exists('config.json'):
+if os.path.exists("config.json"):
     try:
-        with open("config.json", 'r+') as f:
+        with open("config.json", "r+") as f:
             config = json.load(f)
     except Exception as E:
         print(f"Error: {E}")
 
-elif os.path.exists('config.yaml'):
+elif os.path.exists("config.yaml"):
     try:
-        with open("config.yaml", 'r+') as f:
+        with open("config.yaml", "r+") as f:
             config = yaml.load(f)
     except Exception as E:
         print(f"Error: {E}")
 
-elif os.path.exists('config.toml'):
+elif os.path.exists("config.toml"):
     try:
-        with open("config.toml", 'rb') as f:
+        with open("config.toml", "rb") as f:
             config = tomli.load(f)
     except Exception as E:
         print(f"Error: {E}")
