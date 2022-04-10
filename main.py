@@ -8,6 +8,7 @@ from rich.logging import RichHandler
 from tools.define import chunks
 
 from tools.bot import Juice
+from tools.ui import Pager
 
 logging.basicConfig(
     level=logging.DEBUG,
@@ -44,17 +45,21 @@ bot = Tomato()
 
 @bot.command(aliases=['도움말'], extras={'': '도움말을 보여줍니다.'})
 async def help(ctx, *, command: str = None):
-    _cmds = {i: [] for i in list(bot.cogs)}
-    [_cmds[i.cog.qualified_name].append(i) for i in list(bot.commands) if i.cog is not None]
-    cmds = {i: list(chunks(_cmds[i], 6)) for i in _cmds.keys()}
-    embeds = {i: [discord.Embed(title=f'{i} 명령어 - {p} 페이지') for p in range(0, len(cmds[i][0]))] for i in cmds.keys()}
-    [
-        embeds[i][p].add_field(
-            name=f'{j.name} - {"" if j.aliases == [] else j.aliases if len(j.aliases) < 3 else j.aliases[:3] + "..."}',
-            value=f'asdf',
-            inline=False
-        ) for j in (cmds[0][p] for p in (range(0, len(cmds[i])) for i in bot.cogs)]
-    _embeds = [s for s in (embeds[i] for i in embeds.keys())]
-    bot.temp = _embeds
+    _cmds = {i: [] for i in list(bot.cogs)} # {"test":[], "aa": []}
+    [_cmds[i.cog.qualified_name].append(i) for i in list(bot.commands) if i.cog is not None] # {"test":[1,2,3,4,5,6,7,8], "aa": [1,2,3,4]}
+    cmds = {i: list(chunks(_cmds[i], 6)) for i in _cmds.keys()} # {"test":[[1,2,3,4,5,6],[7,8]], "aa": [[1,2,3,4]]}
+    embeds = {i: [discord.Embed(title=f'{i} 명령어 - {p} 페이지') for p in range(0, len(cmds[i][0]))] for i in cmds.keys()} # {"test":[embd1, embd2], "aa": [embd1]}
+    [embeds[i][p].add_field(
+        name=f'{j.name} - {"" if j.aliases == [] else ",".join(j.aliases) if len(j.aliases) < 3 else ", ".join(j.aliases[:3]) + "..."}',
+        value=f'asdf',
+        inline=False
+        ) for i in list(bot.cogs) for p in range(0, len(cmds[i])) for j in cmds[i][p]] # {"test":[embd1+, embd2+], "aa": [embd1+]}
+    _embeds = [i for c in list(bot.cogs) for i in embeds[c]] # [embd1+, embd2+, embd1+]
+    msg = await ctx.send(_embeds[0])
+    view = Pager(ctx, msg, _embeds)
+    await msg.edit(view=view)
+    await view.wait()
+    return msg.delete()
+
 
 bot.run(bot.config['token'])
