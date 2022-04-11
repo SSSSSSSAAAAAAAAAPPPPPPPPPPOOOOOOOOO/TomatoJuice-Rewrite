@@ -2,6 +2,7 @@ import struct
 
 import discord
 from discord.ext import commands
+from koreanbots.integrations.discord import DiscordpyKoreanbots
 
 from tools.config import config
 from tools.db import D_users
@@ -20,11 +21,10 @@ class Juice(commands.Bot):
         )
         self.config = config
         if self.config["koreanbot_token"] != "":
-            import koreanbots
-            self.kb = koreanbots.Koreanbots(
+            self.kb = DiscordpyKoreanbots(
                 self,
                 self.config["koreanbot_token"],
-                run_task=True,
+                run_task=True
             )
 
         self.color = int(bytes.hex(struct.pack("BBB", *tuple(config["color"]))), 16)
