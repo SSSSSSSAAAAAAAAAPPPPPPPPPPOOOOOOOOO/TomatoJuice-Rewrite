@@ -20,7 +20,7 @@ async def main(data, locate_file):
 locate_file = input(">")
 
 try:
-    with open(os.path.join(os.getcwd(), "language", locate_file + ".json"), "r+") as f:
+    with open(os.path.join(os.getcwd(), "language", locate_file + ".json"), "r+", encoding="UTF-8") as f:
         data = json.load(f)
 except Exception as e:
     print(e)

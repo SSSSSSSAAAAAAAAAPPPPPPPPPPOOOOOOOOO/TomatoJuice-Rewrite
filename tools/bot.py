@@ -1,7 +1,6 @@
 import struct
 
 import discord
-import koreanbots
 from discord.ext import commands
 
 from tools.config import config
@@ -21,6 +20,7 @@ class Juice(commands.Bot):
         )
         self.config = config
         if self.config["koreanbot_token"] != "":
+            import koreanbots
             self.kb = koreanbots.Koreanbots(
                 self,
                 self.config["koreanbot_token"],

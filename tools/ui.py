@@ -22,6 +22,7 @@ class selectview(discord.ui.View):
         for a in range(0, len(self.things)):
             self.add_item(yonButton(self.things[a], a))
 
+
     async def on_press(self, button: yonButton, interaction: discord.Interaction):
         if interaction.user == self.user:
             self.value = button.value
@@ -50,7 +51,6 @@ class SelectElement(discord.ui.Select):
         else:
             self.ui.page = self.elements.index(self.values[0])
             await self.ui.msg.edit(embed=self.ui.embed[self.ui.page], view=self.ui)
-
 
 class Pager(discord.ui.View):
     def __init__(self, ctx, msg, embed):

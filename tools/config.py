@@ -1,11 +1,8 @@
-import json
 import os
 import sys
 
-import tomli
-import yaml
-
 if os.path.exists("config.json"):
+    import json
     try:
         with open("config.json", "r+") as f:
             config = json.load(f)
@@ -13,6 +10,7 @@ if os.path.exists("config.json"):
         print(f"Error: {E}")
 
 elif os.path.exists("config.yaml"):
+    import yaml
     try:
         with open("config.yaml", "r+") as f:
             config = yaml.load(f)
@@ -20,6 +18,7 @@ elif os.path.exists("config.yaml"):
         print(f"Error: {E}")
 
 elif os.path.exists("config.toml"):
+    import tomli
     try:
         with open("config.toml", "rb") as f:
             config = tomli.load(f)

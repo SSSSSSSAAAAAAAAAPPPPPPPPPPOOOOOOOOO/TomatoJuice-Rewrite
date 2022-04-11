@@ -4,6 +4,7 @@
   "command": "명령어",
   "info": "정보",
   "prefix": "접두사",
+  "D_U_avatar": "{} 님의 아바타",
   "D_confirm": "확인 되었어요!",
   "D_cancel": "취소 되었어요..",
   "D_timeout": "시간 초과 되었어요..",
