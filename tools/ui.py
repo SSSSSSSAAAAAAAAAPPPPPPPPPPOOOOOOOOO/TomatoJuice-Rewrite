@@ -12,6 +12,7 @@ class yonButton(discord.ui.Button):
     async def callback(self, it: discord.Interaction):
         await self.view.on_press(self, it)
 
+
 class selectview(discord.ui.View):
     def __init__(self, user, select, urls=None):
         super().__init__(timeout=180)
@@ -20,9 +21,7 @@ class selectview(discord.ui.View):
         self.things = select
         self.urls = (urls if urls is not None else [None for a in range(len(self.things))])
         for a in range(len(self.things)):
-            self.add_item(yonButton(self.things[a], self.urls))
-
-
+            self.add_item(yonButton(self.things[a], self.urls[a]))
 
     async def on_press(self, button: yonButton, interaction: discord.Interaction):
         if interaction.user == self.user:
@@ -31,6 +30,7 @@ class selectview(discord.ui.View):
         else:
             _say = await load_text(interaction.user, "NS_user")
             await interaction.response.send_message(_say, ephemeral=True)
+
 
 class SelectElement(discord.ui.Select):
     def __init__(self, user, elements, ui):
@@ -52,6 +52,7 @@ class SelectElement(discord.ui.Select):
             self.ui.page = self.elements.index(self.values[0])
             await self.ui.msg.edit(embed=self.ui.embed[self.ui.page], view=self.ui)
 
+
 class Pager(discord.ui.View):
     def __init__(self, ctx, msg, embed, elements=None):
         super().__init__(timeout=180)
@@ -64,7 +65,7 @@ class Pager(discord.ui.View):
 
     @discord.ui.button(label="⬅", style=discord.ButtonStyle.red, disabled=True)
     async def on_left(
-        self, button: discord.ui.Button, interaction: discord.Interaction
+            self, button: discord.ui.Button, interaction: discord.Interaction
     ):
         if interaction.user == self.ctx.author:
             if self.page + 1 == 1:
@@ -88,7 +89,7 @@ class Pager(discord.ui.View):
 
     @discord.ui.button(label="⬛", style=discord.ButtonStyle.red, disabled=False)
     async def on_stop(
-        self, button: discord.ui.Button, interaction: discord.Interaction
+            self, button: discord.ui.Button, interaction: discord.Interaction
     ):
         if interaction.user == self.ctx.author:
             self.stop()
@@ -98,7 +99,7 @@ class Pager(discord.ui.View):
 
     @discord.ui.button(label="➡", style=discord.ButtonStyle.red, disabled=False)
     async def on_right(
-        self, button: discord.ui.Button, interaction: discord.Interaction
+            self, button: discord.ui.Button, interaction: discord.Interaction
     ):
         if interaction.user == self.ctx.author:
             if self.page + 1 == len(self.embed):

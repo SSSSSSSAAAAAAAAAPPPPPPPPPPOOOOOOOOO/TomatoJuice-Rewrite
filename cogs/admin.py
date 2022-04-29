@@ -45,5 +45,5 @@ class admin(commands.Cog):
             await ctx.send(embed=self.bot.request_permission("customprefix"))
 
 
-def setup(bot):
-    bot.add_cog(admin(bot))
+async def setup(bot):
+    await bot.add_cog(admin(bot))

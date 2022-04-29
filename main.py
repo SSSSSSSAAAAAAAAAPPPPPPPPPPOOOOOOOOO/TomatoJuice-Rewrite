@@ -31,14 +31,14 @@ class Tomato(Juice):
     def __init__(self):
         super().__init__()
 
-        if self.config["isdebug"]:
-            self.load_extension("jishaku")
-
-        if self.config["cogs"]:
-            [self.load_extension(f"cogs.{i}") for i in self.config["cogs"]]
-
     async def on_ready(self):
         self.loop.create_task(change_pr())
+
+        if self.config["isdebug"]:
+            await self.load_extension("jishaku")
+
+        if self.config["cogs"]:
+            [await self.load_extension(f"cogs.{i}") for i in self.config["cogs"]]
 
 
 bot = Tomato()

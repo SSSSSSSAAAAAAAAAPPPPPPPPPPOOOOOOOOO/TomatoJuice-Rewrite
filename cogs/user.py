@@ -37,5 +37,5 @@ class User(commands.Cog):
 
         return await msg.edit(view=None)
 
-def setup(bot):
-    bot.add_cog(User(bot))
+async def setup(bot):
+    await bot.add_cog(User(bot))
