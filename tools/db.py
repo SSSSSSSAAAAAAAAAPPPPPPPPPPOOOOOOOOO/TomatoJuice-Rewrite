@@ -2,9 +2,11 @@
 Database Load tool
 example) from tools.db import YOURDB
 """
+from tools.config import config
+
 import motor.motor_asyncio as motor
 
-dbclient = motor.AsyncIOMotorClient("localhost", 27017)
+dbclient = motor.AsyncIOMotorClient(config["database"]["address"], config["database"]["port"])
 
 db = dbclient.tjdb
 

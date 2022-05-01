@@ -82,7 +82,7 @@ async def help(ctx, *, command: str = None):
     view = Pager(ctx, msg, _embeds)
     await msg.edit(view=view)
     await view.wait()
-    return msg.delete()
+    return await msg.delete()
 
 
 bot.run(bot.config["token"])

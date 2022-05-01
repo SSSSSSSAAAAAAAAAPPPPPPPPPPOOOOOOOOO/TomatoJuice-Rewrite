@@ -2,6 +2,11 @@
   "prefixs": [],
   "cogs":[],
   "language": "ko_KR",
+  "database": {
+    "Used": true,
+    "address": "localhost",
+    "port": 27017
+  },
   "color": [],
   "koreanbot_token": "",
   "isdebug": true,

@@ -4,7 +4,7 @@ import discord
 from discord.ext import commands
 
 from tools.define import load_text
-from tools.ui import Pager
+from tools.ui import SelectEmbeds
 
 
 class User(commands.Cog):
@@ -19,17 +19,33 @@ class User(commands.Cog):
         else:
             formats = ["png","jpg","webp"]
 
-        embeds = [discord.Embed(title=(await load_text(user, "D_U_avatar")).format(user.name), color=user.color)]*2
+        isGavatar = False if not user.avatar or not user.guild_avatar else True 
 
-        embeds[0].set_image(url=user.avatar.url)
-        embeds[1].set_image(url=user.display_avatar.url)
+        title = (
+            await load_text(user, "D_U_avatar")
+            ).format(
+                user.name
+            )
+        embeds = [
+            [
+                discord.Embed(title=title, color=user.color)
+            ]*len(formats)
+            ]*(2 if isGavatar else 1)
 
-        for a in range(len(formats)):
-            embeds[a].set_footer()
+        for i in range(len(formats)):
+            embeds[0][i].set_image(url=user.display_avatar.url.format(format=formats[i]))
+            if isGavatar:
+                embeds[1][i].set_image(url=user.avatar.url.format(format=formats[i]))
+                
 
-        msg = await ctx.send(embed=embeds[0])
+        msg = await ctx.send(embed=embeds[0][0])
 
-        view = Pager(ctx, msg, embeds, formats)
+        ss = [await load_text(user, "default")]
+
+        if isGavatar:
+            ss.append(await load_text(user, "guild"))
+
+        view = SelectEmbeds(ctx, msg, formats, embeds, ss)
 
         await msg.edit(view=view)
 

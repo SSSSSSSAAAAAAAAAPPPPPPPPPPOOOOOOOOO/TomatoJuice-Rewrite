@@ -12,6 +12,53 @@ class yonButton(discord.ui.Button):
     async def callback(self, it: discord.Interaction):
         await self.view.on_press(self, it)
 
+class Selectlsts(discord.ui.Select):
+    def __init__(self, user, selectable):
+        super().__init__(
+            min_values=1,
+            max_values=1,
+            options=[discord.SelectOption(label=i) for i in selectable]
+        )
+        self.user = user
+
+    async def on_press(self, button, it):
+        if it.user == self.user:
+            await self.view.on_press(self, it, self.values[0])
+        else:
+            _say = await load_text(it.user, "NS_user")
+            await it.response.send_message(_say, ephemeral=True)
+
+class SelectEmbeds(discord.ui.View):
+    def __init__(self, ctx, msg, select, embeds, is2DArray = None):
+        super().__init__(timeout=120)
+        self.user = ctx.author
+        self.msg = msg
+        self.select = select
+        self.embeds = embeds
+        self.nnow = 0
+        self.is2DArray = is2DArray
+
+        for a in range(len(select)):
+            self.add_item(yonButton(select[a], None))
+        
+        if len(is2DArray) != 1:
+            self.item = Selectlsts(self.user, is2DArray)
+            self.add_item(self.item)
+    
+    async def on_press(self, button: yonButton, interaction: discord.Interaction, is2DArray = None):
+        if interaction.user == self.user:
+            if is2DArray:
+                self.nnow = self.is2DArray.index(is2DArray)
+            
+            self.value = button.value
+            now = self.select.index(button.value)
+            for i in range(len(self.select)):
+                self.children[i].disabled = (False if i != now else True)
+
+            await self.msg.edit(embed=self.embeds[self.nnow][now], view=self)
+        else:
+            _say = await load_text(interaction.user, "NS_user")
+            await interaction.response.send_message(_say, ephemeral=True)
 
 class selectview(discord.ui.View):
     def __init__(self, user, select, urls=None):
@@ -22,7 +69,6 @@ class selectview(discord.ui.View):
         self.urls = (urls if urls is not None else [None for a in range(len(self.things))])
         for a in range(len(self.things)):
             self.add_item(yonButton(self.things[a], self.urls[a]))
-
     async def on_press(self, button: yonButton, interaction: discord.Interaction):
         if interaction.user == self.user:
             self.value = button.value
@@ -65,7 +111,7 @@ class Pager(discord.ui.View):
 
     @discord.ui.button(label="⬅", style=discord.ButtonStyle.red, disabled=True)
     async def on_left(
-            self, button: discord.ui.Button, interaction: discord.Interaction
+            self, interaction: discord.Interaction, button: discord.ui.Button
     ):
         if interaction.user == self.ctx.author:
             if self.page + 1 == 1:
@@ -89,7 +135,7 @@ class Pager(discord.ui.View):
 
     @discord.ui.button(label="⬛", style=discord.ButtonStyle.red, disabled=False)
     async def on_stop(
-            self, button: discord.ui.Button, interaction: discord.Interaction
+            self, interaction: discord.Interaction, button: discord.ui.Button
     ):
         if interaction.user == self.ctx.author:
             self.stop()
@@ -99,7 +145,7 @@ class Pager(discord.ui.View):
 
     @discord.ui.button(label="➡", style=discord.ButtonStyle.red, disabled=False)
     async def on_right(
-            self, button: discord.ui.Button, interaction: discord.Interaction
+            self, interaction: discord.Interaction, button: discord.ui.Button
     ):
         if interaction.user == self.ctx.author:
             if self.page + 1 == len(self.embed):
