@@ -1,9 +1,16 @@
 from typing import Union
 import discord
+from discord.ext import commands
 from tools.config import config
 from tools.db import D_guilds
 from tools.db import D_language as lang
 from tools.db import D_users as users
+
+
+async def check_withfile(ctx: commands.Context):
+    ctx.message.reference.resolved.attachments
+    ctx.message.attachments
+    ctx.message.content[len(ctx.command.name):]
 
 
 async def check_User(user: Union[discord.Member, discord.User]):

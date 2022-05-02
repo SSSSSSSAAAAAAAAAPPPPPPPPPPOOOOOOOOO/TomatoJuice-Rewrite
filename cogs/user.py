@@ -11,32 +11,31 @@ class User(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name="avatar" , aliases=["pfp"])
+    @commands.command(name="avatar", aliases=["pfp"])
     async def avatar(self, ctx, user: Union[discord.Member, discord.User] = None):
         user = user or ctx.author
         if user.avatar.is_animated():
-            formats = ["gif","webp"]
+            formats = ["gif", "webp"]
         else:
-            formats = ["png","jpg","webp"]
+            formats = ["png", "jpg", "webp"]
 
-        isGavatar = False if not user.avatar or not user.guild_avatar else True 
+        isGavatar = False if not user.avatar or not user.guild_avatar else True
 
         title = (
             await load_text(user, "D_U_avatar")
-            ).format(
-                user.name
-            )
+        ).format(
+            user.name
+        )
         embeds = [
-            [
-                discord.Embed(title=title, color=user.color)
-            ]*len(formats)
-            ]*(2 if isGavatar else 1)
+                     [
+                         discord.Embed(title=title, color=user.color)
+                     ] * len(formats)
+                 ] * (2 if isGavatar else 1)
 
         for i in range(len(formats)):
             embeds[0][i].set_image(url=user.display_avatar.url.format(format=formats[i]))
             if isGavatar:
                 embeds[1][i].set_image(url=user.avatar.url.format(format=formats[i]))
-                
 
         msg = await ctx.send(embed=embeds[0][0])
 
@@ -52,6 +51,7 @@ class User(commands.Cog):
         await view.wait()
 
         return await msg.edit(view=None)
+
 
 async def setup(bot):
     await bot.add_cog(User(bot))
