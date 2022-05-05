@@ -6,6 +6,8 @@
   "prefix": "접두사",
   "default": "기본",
   "guild":"서버",
+  "$schema": "",
+  "":"",
   "D_U_avatar": "{} 님의 프로필 사진",
   "D_U_asSave": "{}로 저장하기",
   "D_U_displayavatar": "",
