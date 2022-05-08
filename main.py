@@ -17,7 +17,7 @@ logging.basicConfig(
 )
 
 logging.getLogger("discord").setLevel(logging.INFO)
-
+logging.getLogger("wavelink").setLevel(logging.INFO)
 
 @tasks.loop(seconds=30)
 async def change_pr():

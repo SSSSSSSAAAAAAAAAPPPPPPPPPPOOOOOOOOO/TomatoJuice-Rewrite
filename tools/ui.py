@@ -12,6 +12,42 @@ class yonButton(discord.ui.Button):
     async def callback(self, it: discord.Interaction):
         await self.view.on_press(self, it)
 
+
+class Selectlts(discord.ui.Select):
+    def __init__(self, user, selectable,desclist = None):
+        self.option = [
+                    discord.SelectOption(label=i) for i in selectable
+                ] if not desclist else [
+                    discord.SelectOption(label=i, description=desclist[selectable.index(i)]) for i in selectable
+                ]
+        super().__init__(
+            min_values=1,
+            max_values=1,
+            options=self.option
+        )
+        self.user = user
+
+    async def callback(self, it):
+        if it.user == self.user:
+            return await self.view.on_press(self, it)
+        else:
+            _say = await load_text(it.user, "NS_user")
+            await it.response.send_message(_say, ephemeral=True)
+
+class SelectMusic(discord.ui.View):
+    def __init__(self, user, MusicList):
+        super().__init__(timeout=120)
+        self.MusicList = MusicList
+        self.view = Selectlts(user, MusicList["title"], MusicList["author"])
+        self.add_item(self.view)
+        self.value = None
+    
+    async def on_press(self, button, it):
+        self.value = self.MusicList["title"].index(button.values[0])
+        await self.stop()
+        
+
+
 class Selectlsts(discord.ui.Select):
     def __init__(self, user, selectable):
         super().__init__(
@@ -21,7 +57,7 @@ class Selectlsts(discord.ui.Select):
         )
         self.user = user
 
-    async def on_press(self, button, it):
+    async def callback(self, it):
         if it.user == self.user:
             await self.view.on_press(self, it, self.values[0])
         else:
@@ -78,7 +114,7 @@ class selectview(discord.ui.View):
             await interaction.response.send_message(_say, ephemeral=True)
 
 
-class SelectElement(discord.ui.Select):
+class SelectElement(discord.ui.Select): 
     def __init__(self, user, elements, ui):
         self.user = user
         self.elements = elements
