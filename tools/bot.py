@@ -5,9 +5,9 @@ from discord.ext import commands
 
 from tools.config import config
 from tools.db import D_users
-from tools.define import load_text, check_User
+from tools.define import load_text, check_User, check_permission
 from tools.ui import selectview
-
+from typing import Union
 
 class Juice(commands.Bot):
     def __init__(self):
@@ -29,12 +29,13 @@ class Juice(commands.Bot):
 
         self.color = int(bytes.hex(struct.pack("BBB", *tuple(config["color"]))), 16)
 
-    def request_permission(self, permission_name: str):
+    async def request_permission(self, permission_name: str, user: Union[discord.Member, discord.User]):
         embed = discord.Embed(
-            title="길드에 권한이 없는거 같아요!",
-            description=f"{permission_name} 권한이 없어서 명령어를 실행할수 없어요!",
+            title=await load_text(user, "D_G_NoPer_title"),
+            description=f"{permission_name} {await load_text(user, 'D_G_NoPer_desc')}",
             color=self.color,
         )
+
         return embed
 
     async def on_message_error(self, ctx, error):
@@ -45,11 +46,14 @@ class Juice(commands.Bot):
             await ctx.send(await load_text(ctx.author, "NF_guild"))
 
         elif isinstance(error, commands.CommandNotFound):
-            return
+            pass
 
+        elif isinstance(error, discord.errors.CheckFailure):
+            pass
+        
         else:
             await ctx.send((await load_text(ctx.author, "error")) + f"```{error}```")
-
+    
     async def process_commands(self, message):
         if message.author.bot:
             return
@@ -104,5 +108,4 @@ class Juice(commands.Bot):
 
                 if not processed[1]:
                     return
-
         await self.invoke(ctx)

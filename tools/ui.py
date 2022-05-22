@@ -87,6 +87,7 @@ class SelectEmbeds(discord.ui.View):
                 self.nnow = self.is2DArray.index(is2DArray)
             
             self.value = button.value
+
             now = self.select.index(button.value)
             for i in range(len(self.select)):
                 self.children[i].disabled = (False if i != now else True)

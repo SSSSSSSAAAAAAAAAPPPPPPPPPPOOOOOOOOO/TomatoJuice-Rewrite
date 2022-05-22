@@ -5,7 +5,6 @@ import sys
 
 from tools.db import D_language as lang
 
-
 async def main(data, locate_file):
     for i in data.keys():
         tmp = await lang.find_one({"_id": i})
@@ -16,8 +15,10 @@ async def main(data, locate_file):
             tmp[locate_file] = data[i]
             await lang.update_one({"_id": i}, {"$set": tmp})
 
-
-locate_file = input(">")
+try:
+    locate_file = sys.argv[1]
+except:
+    locate_file = input(">")
 
 try:
     with open(os.path.join(os.getcwd(), "language", locate_file + ".json"), "r+", encoding="UTF-8") as f:

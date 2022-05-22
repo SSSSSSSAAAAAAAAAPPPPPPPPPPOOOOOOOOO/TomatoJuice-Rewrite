@@ -8,15 +8,11 @@ from time import time
 import discord
 import wavelink
 from wavelink.ext.spotify import SpotifyTrack
-from tools.define import load_text, chunks
+from tools.define import load_text, chunks, URL_REGEX
 from tools.ui import Pager, SelectMusic, Selectlts
 from tools.voice import *
 
 NEWLINE = "\n"
-
-URL_REGEX = re.compile(
-    r"(?:https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})"
-)
 
 SPOTIFY_REGEX = re.compile(
     r"(?:http(?:s):\/\/open\.spotify\.com\/|spotify:)(playlist|track|album)(?:\/|:)([a-z|A-Z|0-9]+)"
@@ -53,7 +49,9 @@ class Voice(commands.Cog):
 
     async def init_voice(self):
         await self.bot.wait_until_ready()
-
+        if not nodes:
+            return
+            
         for i in nodes["nodes"]:
             await wavelink.NodePool.create_node(
                 bot=self.bot,

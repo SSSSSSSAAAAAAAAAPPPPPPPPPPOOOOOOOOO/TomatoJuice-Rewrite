@@ -6,8 +6,11 @@ import wavelink
 from youtube_related import preventDuplication
 import json
 
-with open("lavalink.json", "r+") as f:
-    nodes = json.load(f)
+try:
+    with open("lavalink.json", "r+") as f:
+        nodes = json.load(f)
+except:
+    nodes = False
 
 class LoopType(Enum):
     NONE = 0

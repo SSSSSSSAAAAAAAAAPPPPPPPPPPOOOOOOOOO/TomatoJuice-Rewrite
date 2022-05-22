@@ -2,19 +2,78 @@ from typing import Union
 import discord
 from discord.ext import commands
 from tools.config import config
-from tools.db import D_guilds
+from tools.db import D_guilds as guilds
 from tools.db import D_language as lang
 from tools.db import D_users as users
+import re
+import os
+
+URL_REGEX = re.compile(
+    r"(?:https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})"
+)
 
 
 async def check_withfile(ctx: commands.Context):
     ctx.message.reference.resolved.attachments
     ctx.message.attachments
     ctx.message.content[len(ctx.command.name):]
+    ctx.message.reference.resolved.content
 
+async def check_permission(guild_id: int, Permission_name: str):
+    guild = await guilds.find_one({"_id":guild_id})
+    if not Permission_name in guild['permissions']:
+        return False
+    else:
+        if not guild['permissions'][Permission_name]:
+            return False
+    
+    return True
+
+permission_list = {
+    "guild":{
+        ""
+    },
+
+    "custom":{
+        "user": None,
+        "guild": None
+    },
+
+    "user":{
+
+    },
+
+    "cogs":{
+        i[:-3]: None for i in os.listdir('cogs') if i.endswith('.py')
+    }
+}   
+
+def flatten(d):
+    out = {}
+    for key, val in d.items():
+        if isinstance(val, dict):
+            val = [val]
+        if isinstance(val, list):
+            for subdict in val:
+                deeper = flatten(subdict).items()
+                out.update({key + '.' + key2: val2 for key2, val2 in deeper})
+        else:
+            out[key] = val
+    return out
+
+class gld_permission:
+    def __init__(self, guild_id: int):
+        self.guild = guild_id
+    
+    async def permissions(self):
+        result = {i: await check_permission(self.guild, i) for i in flatten(permission_list).keys()}
+        return result
+    
+#    async def permission_setting(self, permission_name):
+        
 
 async def check_User(user: Union[discord.Member, discord.User]):
-    data = await users.find_one(user.id)
+    data = await users.find_one({"_id":user.id})
     if data is None:
         return False
     else:

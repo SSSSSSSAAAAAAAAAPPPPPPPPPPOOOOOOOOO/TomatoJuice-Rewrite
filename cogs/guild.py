@@ -32,7 +32,7 @@ class guild(commands.Cog):
     #        return ctx.send(embed=embed)
 
     @guild_main.command(name="info", aliases=["정보", "wjdqh"])
-    async def guild_info(self, ctx, guild: Union[discord.Guild] = None):
+    async def guild_info(self, ctx, guild: discord.Guild = None):
         guild = ctx.guild if await self.bot.is_owner(ctx.author) else guild
 
         embed = discord.Embed(title="서버 정보", color=self.bot.color)
