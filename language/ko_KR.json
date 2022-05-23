@@ -57,6 +57,10 @@
   "D_register_done": "가입 되셨습니다!",
   "Q_language_info_title": "언어가 바뀌었어요!",
   "Q_language_info_desc": "현재 당신의 언어는 {} 입니다.",
+  "Q_register_guild_title":"서버 DB 가입 요청",
+  "Q_register_guild_desc":"봇을 사용하기 위해서는 서버를 봇에 가입하셔야 해요!\n서버의 정보가 서버 DB에 등록 될꺼에요!",
+  "D_G_register_done_title":"서버가 봇 DB에 등록 되었어요.",
+  "D_G_register_done_desc":"다른 명령어를 사용하실려면 서버의 권한을 활성화 해주셔야 해요.",
   "error": "오류가 발생했어요!",
   "NotFound": "찾지 못했어요!",
   "C_D_help": "명령어의 도움을 찾아주는 신박한 명령어에요!"

@@ -32,7 +32,7 @@ async def check_permission(guild_id: int, Permission_name: str):
 
 permission_list = {
     "guild":{
-        ""
+        
     },
 
     "custom":{
@@ -41,7 +41,7 @@ permission_list = {
     },
 
     "user":{
-        
+
     },
 
     "cogs":{
@@ -54,21 +54,21 @@ class gld_permission:
         self.guild = guild_id
     
     async def permissions(self):
-        tmp = await D_guilds.find_one({"_id": self.guild})
+        tmp = await guilds.find_one({"_id": self.guild})
 
         if not tmp:
             return tmp
 
-        result = {i: tmp["permission"][i] for i in tmp["permission"].keys()}
-        return result
+        return tmp["permissions"]
     
     async def add_remove_permission(self, permission_name: str):
-        tmp = await D_guilds.find_one({"_id": self.guild})
+        tmp = await guilds.find_one({"_id": self.guild})
 
         if not tmp:
             return
         
-        return await D_guilds.update_one({"_id": self.guild}, tmp)
+        
+        return await guilds.update_one({"_id": self.guild}, tmp)
 
         
         
@@ -87,7 +87,7 @@ def chunks(lst: list, n: int):
 
 
 async def checkPermission(ctx, permission_name: str):
-    tmp = await D_guilds.find_one({"_id": ctx.guild.id})
+    tmp = await guilds.find_one({"_id": ctx.guild.id})
     if tmp is None:
         return False
     else:
@@ -129,7 +129,7 @@ async def help_formater(ctx, command):
 async def load_locate(user: Union[discord.Member, discord.User]):
     data = await users.find_one({"_id": user.id})
     if data is None:
-        return None
+        return config['language']
     else:
         return data["locate"]
 

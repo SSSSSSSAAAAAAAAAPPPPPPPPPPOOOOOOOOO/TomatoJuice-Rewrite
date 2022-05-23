@@ -1,11 +1,12 @@
+import random
 import struct
 
 import discord
 from discord.ext import commands
 
 from tools.config import config
-from tools.db import D_users
-from tools.define import load_text, check_User, check_permission
+from tools.db import D_users, D_guilds
+from tools.define import load_text, check_User, check_permission, permission_list
 from tools.ui import selectview
 from typing import Union
 
@@ -54,6 +55,54 @@ class Juice(commands.Bot):
         else:
             await ctx.send((await load_text(ctx.author, "error")) + f"```{error}```")
     
+    async def on_guild_join(self, guild: discord.Guild):
+        channel = random.choice(guild.channels)
+        embed = discord.Embed(
+                    title=(await load_text(guild.owner, "Q_register_guild_title")).format(
+                        self.user.name
+                    ),
+                    description=await load_text(guild.owner, "Q_register_guild_desc"),
+                    color=self.color,
+                )
+        yon = [
+            await load_text(guild.owner, "yes"),
+            await load_text(guild.owner, "no"),
+        ]
+        view = selectview(guild.owner, yon)
+        msg = await channel.send(embed=embed, view=view)
+        await view.wait()
+        if view.value == yon[0]:
+            post = {
+                "_id": guild.id,
+                "permissions": permission_list
+            }
+
+            await D_guilds.insert_one(post)
+            processed = await load_text(guild.owner, "D_register_done"), True
+            await channel.send(
+                embed=discord.Embed(
+                    title=await load_text(
+                        guild.owner, "D_G_register_done_title"
+                    ),
+                    description=(
+                        await load_text(guild.owner, "D_G_register_done_desc")
+                    ).format(config['language']),
+                    color=self.color,
+                )
+            )
+
+        elif view.value == yon[1]:
+            processed = await load_text(guild.owner, "D_cancel"), False
+
+        else:
+            processed = await load_text(guild.owner, "D_timeout"), False
+        
+        await msg.edit(content=processed[0], embed=None, view=None)
+        
+        if not processed[1]:
+            await channel.send('아쉽게도 서버가 봇DB에 등록되지 않아서 사용할수 없어요...')
+            return await guild.leave()
+
     async def process_commands(self, message):
         if message.author.bot:
             return
