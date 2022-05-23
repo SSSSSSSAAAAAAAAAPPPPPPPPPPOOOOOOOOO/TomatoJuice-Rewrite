@@ -7,6 +7,7 @@ from tools.db import D_language as lang
 from tools.db import D_users as users
 import re
 import os
+from pandas import json_normalize
 
 URL_REGEX = re.compile(
     r"(?:https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})"
@@ -35,41 +36,41 @@ permission_list = {
     },
 
     "custom":{
-        "user": None,
-        "guild": None
+        "user": False,
+        "guild": False
     },
 
     "user":{
-
+        
     },
 
     "cogs":{
-        i[:-3]: None for i in os.listdir('cogs') if i.endswith('.py')
+        i[:-3]: False for i in os.listdir('cogs') if i.endswith('.py')
     }
-}   
-
-def flatten(d):
-    out = {}
-    for key, val in d.items():
-        if isinstance(val, dict):
-            val = [val]
-        if isinstance(val, list):
-            for subdict in val:
-                deeper = flatten(subdict).items()
-                out.update({key + '.' + key2: val2 for key2, val2 in deeper})
-        else:
-            out[key] = val
-    return out
+}
 
 class gld_permission:
     def __init__(self, guild_id: int):
         self.guild = guild_id
     
     async def permissions(self):
-        result = {i: await check_permission(self.guild, i) for i in flatten(permission_list).keys()}
+        tmp = await D_guilds.find_one({"_id": self.guild})
+
+        if not tmp:
+            return tmp
+
+        result = {i: tmp["permission"][i] for i in tmp["permission"].keys()}
         return result
     
-#    async def permission_setting(self, permission_name):
+    async def add_remove_permission(self, permission_name: str):
+        tmp = await D_guilds.find_one({"_id": self.guild})
+
+        if not tmp:
+            return
+        
+        return await D_guilds.update_one({"_id": self.guild}, tmp)
+
+        
         
 
 async def check_User(user: Union[discord.Member, discord.User]):
