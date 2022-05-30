@@ -136,7 +136,7 @@ class Voice(commands.Cog):
             source = await wavelink.SoundCloudTrack.search(query.split(":", 1)[1])
 
         if not source:
-            source = await wavelink.YouTubeTrack.search(query)
+            source = (await wavelink.YouTubeTrack.search(query))[0]
 
         if not source:
             return await ctx.reply(await load_text(ctx.author, "D_V_NoSearchRes"))
@@ -150,8 +150,8 @@ class Voice(commands.Cog):
             player.queue.extend(sources)
             await ctx.reply((await load_text(ctx.author, "D_M_addPlays")).format(len(sources)))
         else:
-            player.queue.put(source[0])
-            await ctx.reply((await load_text(ctx.author, "D_M_addPlay")).format(source[0].title))
+            player.queue.put(source)
+            await ctx.reply((await load_text(ctx.author, "D_M_addPlay")).format(source.title))
 
         if not player.is_playing():
             await player.play(player.queue.get())
