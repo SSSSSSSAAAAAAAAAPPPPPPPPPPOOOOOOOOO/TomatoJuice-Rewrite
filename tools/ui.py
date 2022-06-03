@@ -89,6 +89,7 @@ class SelectEmbeds(discord.ui.View):
             self.value = button.value
 
             now = self.select.index(button.value)
+
             for i in range(len(self.select)):
                 self.children[i].disabled = (False if i != now else True)
 
@@ -96,6 +97,8 @@ class SelectEmbeds(discord.ui.View):
         else:
             _say = await load_text(interaction.user, "NS_user")
             await interaction.response.send_message(_say, ephemeral=True)
+        
+        await interaction.response.defer()
 
 class selectview(discord.ui.View):
     def __init__(self, user, select, urls=None):
