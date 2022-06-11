@@ -5,7 +5,7 @@
 
 # **TomatoJuice-Rewrite**
 
-**[invite](https://discordapp.com/oauth2/authorize?client_id=470106694014337035&permissions=8)**
+**[invite](https://discordapp.com/oauth2/authorize?client_id=470106694014337035&scope=bot&permissions=8)**
 
 ![Screenshot1](https://cdn.discordapp.com/attachments/473389341591470081/985121502691201105/unknown.png)
 
