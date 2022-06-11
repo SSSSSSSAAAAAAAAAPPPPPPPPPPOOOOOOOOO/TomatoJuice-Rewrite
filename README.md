@@ -7,7 +7,7 @@
 
 **[invite](https://discordapp.com/oauth2/authorize?client_id=470106694014337035&scope=bot&permissions=8)**
 
-![Screenshot1](https://cdn.discordapp.com/attachments/473389341591470081/985121502691201105/unknown.png)
+[![Screenshot1](https://cdn.discordapp.com/attachments/473389341591470081/985121502691201105/unknown.png)](https://github.com/WieeRd/ClockBot/issues/2)
 
  + 이런
 
