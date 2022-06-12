@@ -16,8 +16,8 @@
 | 현재 | 적용 | 내용 |
 | -- | -- |----------- |
 | Working | ❌ | 봇 내부 Permission 구현|
-| ☑️ | ❌ | 뮤직 봇 |
-|  | ❌ | 도전과제 기능 |
+| ☑️ | ❌ | [뮤직](https://github.com/SapoKR/TomatoJuice-Rewrite/blob/main/cogs/voice.py) 봇 |
+| Working | ❌ | 도전과제 기능 |
 | Working | ❌ | Economy 기능 |
 | Working | ❌ | 디스코드 지원 UI와 어울리는 기능 |
 |  | ❌ | 랜덤 채팅 |

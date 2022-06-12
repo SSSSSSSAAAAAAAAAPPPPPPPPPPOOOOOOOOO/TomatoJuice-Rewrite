@@ -16,6 +16,7 @@
   "disable":"비활성화",
   "OnceRepeat":"한 곡 반복",
   "AllRepeat":"전체 반복",
+  "D_M_achi_title": "도전과제 달성!",
   "D_M_AutoPlay":"자동재생을 {}했어요!",
   "D_M_VolRange":"{}과 {} 사이의 볼륨을 입력하여 주세요!",
   "D_M_SetVol":"볼륨을 {}%로 설정했어요!",
