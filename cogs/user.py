@@ -21,19 +21,15 @@ class User(commands.Cog):
 
         isGavatar = False if not user.avatar or not user.guild_avatar else True
 
-        title = (
-            await load_text(user, "D_U_avatar")
-        ).format(
-            user.name
+        title = (await load_text(user, "D_U_avatar")).format(user.name)
+        embeds = [[discord.Embed(title=title, color=user.color)] * len(formats)] * (
+            2 if isGavatar else 1
         )
-        embeds = [
-                     [
-                         discord.Embed(title=title, color=user.color)
-                     ] * len(formats)
-                 ] * (2 if isGavatar else 1)
 
         for i in range(len(formats)):
-            embeds[0][i].set_image(url=user.display_avatar.url.format(format=formats[i]))
+            embeds[0][i].set_image(
+                url=user.display_avatar.url.format(format=formats[i])
+            )
             if isGavatar:
                 embeds[1][i].set_image(url=user.avatar.url.format(format=formats[i]))
 

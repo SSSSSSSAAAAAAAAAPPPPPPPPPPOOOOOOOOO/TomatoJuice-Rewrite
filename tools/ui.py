@@ -14,17 +14,16 @@ class yonButton(discord.ui.Button):
 
 
 class Selectlts(discord.ui.Select):
-    def __init__(self, user, selectable,desclist = None):
-        self.option = [
-                    discord.SelectOption(label=i) for i in selectable
-                ] if not desclist else [
-                    discord.SelectOption(label=i, description=desclist[selectable.index(i)]) for i in selectable
-                ]
-        super().__init__(
-            min_values=1,
-            max_values=1,
-            options=self.option
+    def __init__(self, user, selectable, desclist=None):
+        self.option = (
+            [discord.SelectOption(label=i) for i in selectable]
+            if not desclist
+            else [
+                discord.SelectOption(label=i, description=desclist[selectable.index(i)])
+                for i in selectable
+            ]
         )
+        super().__init__(min_values=1, max_values=1, options=self.option)
         self.user = user
 
     async def callback(self, it):
@@ -34,6 +33,7 @@ class Selectlts(discord.ui.Select):
             _say = await load_text(it.user, "NS_user")
             await it.response.send_message(_say, ephemeral=True)
 
+
 class SelectMusic(discord.ui.View):
     def __init__(self, user, MusicList):
         super().__init__(timeout=120)
@@ -41,11 +41,10 @@ class SelectMusic(discord.ui.View):
         self.view = Selectlts(user, MusicList["title"], MusicList["author"])
         self.add_item(self.view)
         self.value = None
-    
+
     async def on_press(self, button, it):
         self.value = self.MusicList["title"].index(button.values[0])
         await self.stop()
-        
 
 
 class Selectlsts(discord.ui.Select):
@@ -53,7 +52,7 @@ class Selectlsts(discord.ui.Select):
         super().__init__(
             min_values=1,
             max_values=1,
-            options=[discord.SelectOption(label=i) for i in selectable]
+            options=[discord.SelectOption(label=i) for i in selectable],
         )
         self.user = user
 
@@ -64,8 +63,9 @@ class Selectlsts(discord.ui.Select):
             _say = await load_text(it.user, "NS_user")
             await it.response.send_message(_say, ephemeral=True)
 
+
 class SelectEmbeds(discord.ui.View):
-    def __init__(self, ctx, msg, select, embeds, is2DArray = None):
+    def __init__(self, ctx, msg, select, embeds, is2DArray=None):
         super().__init__(timeout=120)
         self.user = ctx.author
         self.msg = msg
@@ -76,29 +76,30 @@ class SelectEmbeds(discord.ui.View):
 
         for a in range(len(select)):
             self.add_item(yonButton(select[a], None))
-        
+
         if len(is2DArray) != 1:
             self.item = Selectlsts(self.user, is2DArray)
             self.add_item(self.item)
-    
-    async def on_press(self, button: yonButton, interaction: discord.Interaction, is2DArray = None):
+
+    async def on_press(
+        self, button: yonButton, interaction: discord.Interaction, is2DArray=None
+    ):
         if interaction.user == self.user:
             if is2DArray:
                 self.nnow = self.is2DArray.index(is2DArray)
-            
+
             self.value = button.value
 
             now = self.select.index(button.value)
 
             for i in range(len(self.select)):
-                self.children[i].disabled = (False if i != now else True)
+                self.children[i].disabled = False if i != now else True
 
             await self.msg.edit(embed=self.embeds[self.nnow][now], view=self)
         else:
             _say = await load_text(interaction.user, "NS_user")
             await interaction.response.send_message(_say, ephemeral=True)
-        
-        await interaction.response.defer()
+
 
 class selectview(discord.ui.View):
     def __init__(self, user, select, urls=None):
@@ -106,9 +107,12 @@ class selectview(discord.ui.View):
         self.value = None
         self.user = user
         self.things = select
-        self.urls = (urls if urls is not None else [None for a in range(len(self.things))])
+        self.urls = (
+            urls if urls is not None else [None for a in range(len(self.things))]
+        )
         for a in range(len(self.things)):
             self.add_item(yonButton(self.things[a], self.urls[a]))
+
     async def on_press(self, button: yonButton, interaction: discord.Interaction):
         if interaction.user == self.user:
             self.value = button.value
@@ -118,7 +122,7 @@ class selectview(discord.ui.View):
             await interaction.response.send_message(_say, ephemeral=True)
 
 
-class SelectElement(discord.ui.Select): 
+class SelectElement(discord.ui.Select):
     def __init__(self, user, elements, ui):
         self.user = user
         self.elements = elements
@@ -146,12 +150,14 @@ class Pager(discord.ui.View):
         self.ctx = ctx
         self.msg = msg
         self.embed = embed
-        self.item = SelectElement(ctx.author, [i.title for i in embed] if elements is None else elements, self)
+        self.item = SelectElement(
+            ctx.author, [i.title for i in embed] if elements is None else elements, self
+        )
         self.add_item(self.item)
 
     @discord.ui.button(label="⬅", style=discord.ButtonStyle.red, disabled=True)
     async def on_left(
-            self, interaction: discord.Interaction, button: discord.ui.Button
+        self, interaction: discord.Interaction, button: discord.ui.Button
     ):
         if interaction.user == self.ctx.author:
             if self.page + 1 == 1:
@@ -175,7 +181,7 @@ class Pager(discord.ui.View):
 
     @discord.ui.button(label="⬛", style=discord.ButtonStyle.red, disabled=False)
     async def on_stop(
-            self, interaction: discord.Interaction, button: discord.ui.Button
+        self, interaction: discord.Interaction, button: discord.ui.Button
     ):
         if interaction.user == self.ctx.author:
             self.stop()
@@ -185,7 +191,7 @@ class Pager(discord.ui.View):
 
     @discord.ui.button(label="➡", style=discord.ButtonStyle.red, disabled=False)
     async def on_right(
-            self, interaction: discord.Interaction, button: discord.ui.Button
+        self, interaction: discord.Interaction, button: discord.ui.Button
     ):
         if interaction.user == self.ctx.author:
             if self.page + 1 == len(self.embed):

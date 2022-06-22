@@ -3,13 +3,14 @@ import sys
 
 if os.path.exists("config.json"):
     import json
+
     try:
-        with open("config.json", "r+", encoding='utf-8') as f:
+        with open("config.json", "r+", encoding="utf-8") as f:
             config = json.load(f)
     except Exception as E:
         print(f"Error: {E}")
 #
-#elif os.path.exists("config.yaml"):
+# elif os.path.exists("config.yaml"):
 #    import yaml
 #
 #    try:
@@ -18,7 +19,7 @@ if os.path.exists("config.json"):
 #    except Exception as E:
 #        print(f"Error: {E}")
 #
-#elif os.path.exists("config.toml"):
+# elif os.path.exists("config.toml"):
 #    import tomli
 #
 #    try:

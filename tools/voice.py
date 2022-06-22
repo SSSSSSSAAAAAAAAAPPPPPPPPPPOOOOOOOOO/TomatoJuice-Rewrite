@@ -12,6 +12,7 @@ try:
 except:
     nodes = False
 
+
 class LoopType(Enum):
     NONE = 0
     REPEAT_ALL = 1

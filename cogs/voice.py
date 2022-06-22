@@ -18,6 +18,7 @@ SPOTIFY_REGEX = re.compile(
     r"(?:http(?:s):\/\/open\.spotify\.com\/|spotify:)(playlist|track|album)(?:\/|:)([a-z|A-Z|0-9]+)"
 )
 
+
 def get_progress(value, Total):
     position_front = round(value / Total * 10)
     position_back = 10 - position_front
@@ -41,7 +42,6 @@ async def is_connected(ctx):
         return False
 
 
-
 class Voice(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -51,7 +51,7 @@ class Voice(commands.Cog):
         await self.bot.wait_until_ready()
         if not nodes:
             return
-            
+
         for i in nodes["nodes"]:
             await wavelink.NodePool.create_node(
                 bot=self.bot,
@@ -60,7 +60,6 @@ class Voice(commands.Cog):
                 password=i["password"],
             )
 
-    
     @commands.Cog.listener()
     async def on_wavelink_track_end(self, player: Player, track: wavelink.Track, **_):
         if player.loop == LoopType.REPEAT_ONE:
@@ -100,7 +99,9 @@ class Voice(commands.Cog):
             return await ctx.reply(await load_text(ctx.author, "D_V_NoJoin"))
 
         await ctx.author.voice.channel.connect(cls=Player(ctx.channel))
-        await ctx.reply((await load_text(ctx.author, "D_V_JoinTo")).format(ctx.author.voice.channel))
+        await ctx.reply(
+            (await load_text(ctx.author, "D_V_JoinTo")).format(ctx.author.voice.channel)
+        )
 
         if ctx.author.voice.channel.type == discord.ChannelType.stage_voice:
             try:
@@ -148,10 +149,14 @@ class Voice(commands.Cog):
                 sources = source
 
             player.queue.extend(sources)
-            await ctx.reply((await load_text(ctx.author, "D_M_addPlays")).format(len(sources)))
+            await ctx.reply(
+                (await load_text(ctx.author, "D_M_addPlays")).format(len(sources))
+            )
         else:
             player.queue.put(source)
-            await ctx.reply((await load_text(ctx.author, "D_M_addPlay")).format(source.title))
+            await ctx.reply(
+                (await load_text(ctx.author, "D_M_addPlay")).format(source.title)
+            )
 
         if not player.is_playing():
             await player.play(player.queue.get())
@@ -169,19 +174,21 @@ class Voice(commands.Cog):
         if not results:
             return await ctx.reply(await load_text(ctx.author, "D_V_NoSearchRes"))
 
-        tad = {"title":[],"author":[]}
+        tad = {"title": [], "author": []}
         a = 1
         for i in results:
-            _titletmp = i.title + "\u200B"*a
+            _titletmp = i.title + "\u200B" * a
             if len(_titletmp) > 100:
                 _titletmp = _titletmp[:96] + "..."
             tad["title"].append(_titletmp)
             tad["author"].append(i.author)
-            a+=1
+            a += 1
 
         view = SelectMusic(ctx.author, tad)
 
-        msg = await ctx.reply(await load_text(ctx.author, "D_M_SearchChoice"), view=view)
+        msg = await ctx.reply(
+            await load_text(ctx.author, "D_M_SearchChoice"), view=view
+        )
 
         await view.wait()
 
@@ -193,7 +200,10 @@ class Voice(commands.Cog):
         if not player.is_playing():
             await player.play(player.queue.get())
 
-        await msg.edit((await load_text(ctx.author, "D_M_addPlay")).format(results[view.value]), view=None)
+        await msg.edit(
+            (await load_text(ctx.author, "D_M_addPlay")).format(results[view.value]),
+            view=None,
+        )
 
     @commands.command(aliases=["일시중지", "일시정지", "ㅇㅅㅈㅈ"])
     @commands.check(is_connected)
@@ -204,7 +214,7 @@ class Voice(commands.Cog):
     @commands.command(aliases=["다시시작", "ㄷㅅㅅㅈ", "재개"])
     @commands.check(is_connected)
     async def resume(self, ctx):
-        await ctx.voice_client.resume() 
+        await ctx.voice_client.resume()
         await ctx.reply(await load_text(ctx.author, "D_M_resume"))
 
     @commands.command(aliases=["스킵", "ㅅㅋ"])
@@ -227,7 +237,9 @@ class Voice(commands.Cog):
             return await ctx.reply(f"🔉 **{player.volume}%**")
 
         if not -1 < volume < 1001:
-            return await ctx.reply((await load_text(ctx.author, "D_V_VolRange")).format(0, 1000))
+            return await ctx.reply(
+                (await load_text(ctx.author, "D_V_VolRange")).format(0, 1000)
+            )
 
         await player.set_volume(volume)
         await ctx.reply((await load_text(ctx.author, "D_M_SetVol")).format(volume))
@@ -238,7 +250,9 @@ class Voice(commands.Cog):
         player: Player = ctx.voice_client
 
         if not player.is_playing():
-            embed = discord.Embed(title=await load_text(ctx.author, "D_V_NoPlaying"), color=self.bot.color)
+            embed = discord.Embed(
+                title=await load_text(ctx.author, "D_V_NoPlaying"), color=self.bot.color
+            )
         else:
             timestamp = (
                 f"<t:{int(time() + (player.source.duration - player.position))}:R> 종료\n"
@@ -343,10 +357,18 @@ class Voice(commands.Cog):
 
         if player.loop == LoopType.NONE:
             player.loop = LoopType.REPEAT_ONE
-            await ctx.reply((await load_text(ctx.author, "D_M_Repeatto")).format(await load_text(ctx.author, "OnceRepeat")))
+            await ctx.reply(
+                (await load_text(ctx.author, "D_M_Repeatto")).format(
+                    await load_text(ctx.author, "OnceRepeat")
+                )
+            )
         elif player.loop == LoopType.REPEAT_ONE:
             player.loop = LoopType.REPEAT_ALL
-            await ctx.reply((await load_text(ctx.author, "D_M_Repeatto")).format(await load_text(ctx.author, "AllRepeat")))
+            await ctx.reply(
+                (await load_text(ctx.author, "D_M_Repeatto")).format(
+                    await load_text(ctx.author, "AllRepeat")
+                )
+            )
         elif player.loop == LoopType.REPEAT_ALL:
             player.loop = LoopType.NONE
             await ctx.reply(await load_text(ctx.author, "D_M_Repeatoff"))
@@ -358,7 +380,11 @@ class Voice(commands.Cog):
 
         player.is_autoplay = not player.is_autoplay
         _tmp = "enable" if player.is_autoplay else "disable"
-        await ctx.reply((await load_text(ctx.author, "D_M_AutoPlay")).format(await load_text(ctx.author, _tmp)))
+        await ctx.reply(
+            (await load_text(ctx.author, "D_M_AutoPlay")).format(
+                await load_text(ctx.author, _tmp)
+            )
+        )
 
     @commands.command(aliases=["삭제", "제거", "ㅅㅈ", "ㅈㄱ"])
     @commands.check(is_connected)
@@ -371,8 +397,9 @@ class Voice(commands.Cog):
             del player.queue[index - 1]
         except IndexError:
             _tmp = "D_M_QueueRemoveFail"
-        
+
         return await ctx.reply((await load_text(ctx.author, _tmp)).format(index))
+
 
 async def setup(bot):
     await bot.add_cog(Voice(bot))
