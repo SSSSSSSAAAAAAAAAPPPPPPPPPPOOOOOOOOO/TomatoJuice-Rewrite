@@ -20,7 +20,7 @@ D_customprefix = db.ctprefix
 D_blacklists = db.blacklists
 D_coinposts = db.coins
 
-D_commands = db.commands
+D_commands = db.cmds
 
 D_achi = db.achievements
 

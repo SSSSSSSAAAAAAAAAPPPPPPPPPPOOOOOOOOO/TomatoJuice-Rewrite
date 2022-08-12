@@ -8,7 +8,7 @@ from time import time
 import discord
 import wavelink
 from wavelink.ext.spotify import SpotifyTrack
-from tools.define import load_text, chunks, URL_REGEX
+from tools.define import check_achievement, load_text, chunks, URL_REGEX
 from tools.ui import Pager, SelectMusic, Selectlts
 from tools.voice import *
 
@@ -117,6 +117,7 @@ class Voice(commands.Cog):
         await ctx.reply(await load_text(ctx.author, "D_M_stop"))
 
     @commands.command(aliases=["p", "재생", "ㅔ", "ㅈㅅ"])
+    @check_achievement('NeverGonnaGiveYouUp')
     async def play(self, ctx, *, query: str):
         if not ctx.voice_client:
             await ctx.invoke(self.join)

@@ -9,11 +9,15 @@ from tools.define import load_text
 class manage(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+    
 
-    @commands.group(aliases=["경고"])
+    @commands.group(
+        aliases=["경고"],
+        invoke_without_command=True
+        )
     async def warn(self, ctx):
-        if not ctx.invoked_subcommand:
-            await ctx.invoke()
+        #await ctx.invoke()
+        pass
 
     @warn.command(aliases=["부여"])
     async def give(

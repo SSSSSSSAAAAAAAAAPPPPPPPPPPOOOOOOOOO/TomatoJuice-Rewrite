@@ -87,10 +87,14 @@ class SelectEmbeds(discord.ui.View):
         if interaction.user == self.user:
             if is2DArray:
                 self.nnow = self.is2DArray.index(is2DArray)
+            
+            try:
+                self.value = button.value
+                now = self.select.index(button.value)
 
-            self.value = button.value
-
-            now = self.select.index(button.value)
+            except:
+                self.value = button.values[0]
+                now = 0
 
             for i in range(len(self.select)):
                 self.children[i].disabled = False if i != now else True
@@ -108,7 +112,7 @@ class selectview(discord.ui.View):
         self.user = user
         self.things = select
         self.urls = (
-            urls if urls is not None else [None for a in range(len(self.things))]
+            urls if not urls else [None for a in range(len(self.things))]
         )
         for a in range(len(self.things)):
             self.add_item(yonButton(self.things[a], self.urls[a]))

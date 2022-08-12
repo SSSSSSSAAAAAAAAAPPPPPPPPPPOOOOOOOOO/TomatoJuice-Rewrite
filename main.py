@@ -35,7 +35,7 @@ class Tomato(Juice):
     async def on_ready(self):
         self.loop.create_task(change_pr())
 
-        if self.config["isdebug"]:
+        if self.config["debug"]:
             await self.load_extension("jishaku")
 
         if self.config["cogs"]:
@@ -62,7 +62,7 @@ async def help(ctx, *, command: str = None):
     }
     embeds = {
         i: [
-            discord.Embed(title=f"{i} 명령어 - {p + 1} 페이지")
+            discord.Embed(title=(await load_text(ctx.author, "help_page")).format(i, p + 1))
             for p in range(0, len(cmds[i][0]))
             # {"test":[embd1, embd2], "aa": [embd1]}
         ]

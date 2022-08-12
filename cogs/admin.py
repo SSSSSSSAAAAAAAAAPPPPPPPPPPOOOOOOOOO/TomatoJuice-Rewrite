@@ -1,15 +1,14 @@
 import discord
 from discord.ext import commands
 
-from tools.db import D_commands, D_customprefix
-from tools.define import check_permission, ad_help_formater, chunks, load_text, default_url
-from tools.db import D_achi
+from tools.db import D_commands, D_customprefix, D_achi
+from tools.define import check_achievement, check_permission, ad_help_formater, chunks, load_text, default_url
 from tools.ui import Pager 
 
-async def returnresult(self):
+async def returnresult(self):   
     _lucmd = await D_commands.find().to_list(length=1000)
     _lucmd_usage = {}
-    [_lucmd_usage.update({i["name"]: i["used"]}) for i in _lucmd]
+    [_lucmd_usage.update({i["_id"]: i["used"]}) for i in _lucmd]
     cmds = sorted(_lucmd_usage.items(), key=lambda item: item[1])
     return "\n".join(f"**{'$' + c[0]} : {c[1]}**" for c in cmds)
 
@@ -17,40 +16,51 @@ async def returnresult(self):
 class admin(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.check_achi = ['Pokebot', 'WeAreNumberOne', "Tada"]
+        self.filtered_achi = ["test"]
 
     @commands.Cog.listener(name="on_command_completion")
     async def record(self, ctx: commands.Context):
+        
         cmd = ctx.command.qualified_name
-        if ctx.author.id not in self.bot.owner_ids:
-            _cmd = await D_commands.find_one({"name": cmd})
+        
+        if not await self.bot.is_owner(ctx.author):
+            
+            _cmd = await D_commands.find_one({"_id": cmd})
+            
             if _cmd is not None:
-                await D_commands.update_one({"name": cmd}, {"$inc": {"used": +1}})
+                
+                await D_commands.update_one({"_id": cmd}, {"$inc": {"used": +1}})
+                
             else:
-                post = {"name": cmd, "used": 1}
+                
+                post = {"_id": cmd, "used": 1}
                 await D_commands.insert_one(post)
+                
+            [await check_achievement(i).predicate(ctx) for i in self.check_achi]
 
     @commands.group(
         name='도전과제',
-        aliases=['achi', 'achievement']
+        aliases=['achi', 'achievement'],
+        invoke_without_command=True
     )
     @commands.is_owner()
     async def achi(self, ctx):
-        if not ctx.invoked_subcommand:
-            await ctx.invoke
+        await ctx.invoke(self.achi_list)
     
     @achi.command(
         name='추가'
     )
     @commands.is_owner()
-    async def achi_append(self, ctx, short_n: str, value:int, url = None):
+    async def achi_append(self, ctx, short_n: str, type: int, value, url = None):
         post = {
             "_id": short_n,
             "action": {
-                "type": 1,
-                "value": value
+                "type": type,
+                "value": int(value) if type == 1 else value
             },
             "url": url,
-            "locked": True
+            "locked": False
         }
         await D_achi.insert_one(post)
         return await ctx.send(await load_text(ctx.author, 'D_achi_append'))
@@ -58,6 +68,7 @@ class admin(commands.Cog):
     @achi.command(
         name='삭제'
     )
+    @commands.is_owner()
     async def achi_delete(self, ctx, short_n: str):
         return await ctx.send(await load_text(ctx.author, 'D_achi_delete'))
 
@@ -65,7 +76,6 @@ class admin(commands.Cog):
         name='리스트',
         aliases=['목록']
     )
-    @commands.is_owner()
     async def achi_list(self, ctx):
         cmde = await D_achi.find().to_list(length=1000)
         embeds = [
@@ -76,7 +86,7 @@ class admin(commands.Cog):
                 description=await load_text(
                     ctx.author, 'achi_'+i['_id']+'_desc'
                     )
-                ).add_thumbnail(url=i["url"] or default_url + "/" + i['_id'] + ".png") for i in cmde
+                ).set_thumbnail(url=i["url"] or default_url + "/" + i['_id'] + ".png") for i in filter(lambda u: u['_id'] not in self.filtered_achi,cmde)
             ]
         msg = await ctx.send(embed=embeds[0])
         view = Pager(ctx, msg, embeds)
@@ -97,9 +107,9 @@ class admin(commands.Cog):
                 await D_customprefix.update_one(
                     {"_id": ctx.guild.id}, {"$set": {"prefix": prefix}}, upsert=True
                 )
-                await ctx.send(f"접두사가 {prefix}로 설정되었습니다.")
+                await ctx.send((await load_text(ctx.author, "D_G_CustomPrefix")).format(prefix))
             else:
-                await ctx.send("접두사를 입력해주세요.")
+                await ctx.send(await load_text(ctx.author, "D_G_PrefixNone"))
         else:
             await ctx.send(embed=self.bot.request_permission("customprefix"))
 

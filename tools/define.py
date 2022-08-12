@@ -6,6 +6,9 @@ from tools.db import D_guilds as guilds
 from tools.db import D_language as lang
 from tools.db import D_users as users
 from tools.db import D_achi as achievement
+from tools.db import D_commands as cmd_stat
+from jishaku.functools import AsyncSender
+import random
 import re
 import os
 
@@ -13,48 +16,86 @@ URL_REGEX = re.compile(
     r"(?:https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})"
 )
 
-default_url = "https://cdn.jsdelivr.net/gh/SapoKR/TomatoJuice-Assets"
+default_url = "https://cdn.jsdelivr.net/gh/SapoKR/TomatoJuice-Assets/"
 
 
 async def check_withfile(ctx: commands.Context):
-    ctx.message.reference.resolved.attachments
-    ctx.message.attachments
-    ctx.message.content[len(ctx.command.name) :]
-    ctx.message.reference.resolved.content
+    files = [ctx.message.attachments]
 
+    result = True, files
+    
+    if not ctx.message.reference:
+        files = files+ctx.message.reference.resolved.attachments
+    
+    if not files:
+        return False, None
+    
+    return result
 
+async def asynceval(code, query=globals()):
+    query = dict(query, **globals()) if query != globals() else query
+    exec(f'async def __ex(): return {code}', query, locals())
+    return await locals()['__ex']()
+    
 def check_achievement(permission_name: str):
-    async def predicate(ctx: commands.Context):
+    async def predicate(ctx: commands.Context, permission_n: str = permission_name):
         tmp = await users.find_one({"_id": ctx.author.id})
+
         if "achi" not in tmp["other"]:
             tmp["other"]["achi"] = []
-        if permission_name in tmp["other"]["achi"]:
+
+        if permission_n in tmp["other"]["achi"]:
             return True
-        teamp = await achievement.find_one({"_id": permission_name})
+
+        teamp = await achievement.find_one({"_id": permission_n})
+
         if not teamp:
             return True
+
         if teamp["locked"]:
             return True
+
         embed = discord.Embed()
+
         embed.set_author(
             name=await load_text(ctx.author, "D_M_achi_title")
         )
-        if teamp["action"]["type"]:
+
+        if teamp["action"]["type"] == 1:
             tmp["economy"]["money"] += teamp["action"]["value"]
-            tmp["other"]["achi"].append(permission_name)
-            await users.update_one(
-                {"_id": ctx.author.id}, {"$set": tmp}
-            )
-            embed.add_field(
-                name=await load_text(ctx.author, "achi_" + permission_name),
-                value=f"{await load_text(ctx.author, 'achi_'+permission_name+'_desc')}\n+ {teamp['action']['value']}",
-            )
-            embed.set_thumbnail(
-                url=teamp["url"]
-                or default_url + "/" + permission_name + ".png"
-            )
+            tmp["other"]["achi"].append(permission_n)
+        
+        if teamp["action"]["type"] == 2:
+            try:
+              if not await asynceval(teamp["action"]["value"], {"ctx": ctx}):
+                  return False
+            except Exception as a:
+                print(a)
+                await achievement.update_one(
+                    {"_id": permission_n}, {"$set": {"locked": True}}
+                    )
+                return False
+            
+                tmp["other"]["achi"].append(permission_n)
+
+        embed.add_field(
+            name=await load_text(ctx.author, "achi_" + permission_n),
+            value=f"{await load_text(ctx.author, 'achi_'+permission_n+'_desc')}\n +{teamp['action']['value'] if teamp['action']['type'] == 1 else await load_text(ctx.author, 'nothing')}",
+        )
+
+        embed.set_thumbnail(
+            url=teamp["url"]
+            or default_url + permission_n + ".png"
+        )
+
+        await users.update_one(
+            {"_id": ctx.author.id}, {"$set": tmp}
+        )
+
         await ctx.send(embed=embed)
+
         return True
+    
 
     return commands.check(predicate)
 

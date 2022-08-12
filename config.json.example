@@ -9,6 +9,6 @@
   },
   "color": [],
   "koreanbot_token": "",
-  "isdebug": true,
+  "debug": true,
   "token": ""
 }

@@ -10,12 +10,15 @@ from tools.define import load_text, check_User, check_permission, permission_lis
 from tools.ui import selectview
 from typing import Union
 
+intents=discord.Intents.all()
+intents.members = True
+intents.presences = True
 
 class Juice(commands.Bot):
     def __init__(self):
         super().__init__(
             command_prefix=config["prefixs"],
-            intents=discord.Intents.all(),
+            intents=intents,
             help_command=None,
             case_insensitive=True,
             strip_after_prefix=True,
@@ -105,7 +108,7 @@ class Juice(commands.Bot):
         await msg.edit(content=processed[0], embed=None, view=None)
 
         if not processed[1]:
-            await channel.send("아쉽게도 서버가 봇DB에 등록되지 않아서 사용할수 없어요...")
+            await channel.send(await load_text(guild.owner, "D_G_RegisterCancel"))
             return await guild.leave()
 
     async def process_commands(self, message):
