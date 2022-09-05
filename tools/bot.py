@@ -23,7 +23,10 @@ class Juice(commands.Bot):
             case_insensitive=True,
             strip_after_prefix=True,
         )
+
         self.config = config
+
+        self.isDataBase = self.config['datatbase']['Used']
         if self.config["koreanbot_token"] != "":
             from koreanbots.integrations.discord import DiscordpyKoreanbots
 
