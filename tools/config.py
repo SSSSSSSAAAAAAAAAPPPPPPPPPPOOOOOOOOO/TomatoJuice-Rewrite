@@ -1,14 +1,13 @@
 import os
 import sys
 
-if os.path.exists("config.json"):
-    import json
-
-    try:
-        with open("config.json", "r+", encoding="utf-8") as f:
-            config = json.load(f)
-    except Exception as E:
-        print(f"Error: {E}")
+if os.path.exists("config.json"): # is it config.json?
+    import json # import json
+    try: # try
+        with open("config.json", "r+", encoding="utf-8") as f: # read a config.json with encode utf-8 
+            config = json.load(f) # config is config.json's content
+    except Exception as E: # is Error
+        print(f"Error: {E}") # error content print
 #
 # elif os.path.exists("config.yaml"):
 #    import yaml
@@ -27,8 +26,8 @@ if os.path.exists("config.json"):
 #            config = tomli.load(f)
 #    except Exception as E:
 #        print(f"Error: {E}")
-else:
-    print("Error: No config file found")
-    sys.exit(-1)
+else: # is not config.json
+    print("Error: No config file found") # config.json is not found
+    sys.exit(-1) # no run
 
-config = config
+config = config # config(global) is config
