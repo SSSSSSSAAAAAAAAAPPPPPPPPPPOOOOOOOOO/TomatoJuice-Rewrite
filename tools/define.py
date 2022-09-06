@@ -124,42 +124,48 @@ class gld_permission: #Guild Permission Object
     def __init__(self, guild_id: int): # init setting
         self.guild = guild_id # guild = guild id
 
-    async def permissions(self): # get permission 
+    async def permissions(self): # get permissions
         tmp = await guilds.find_one({"_id": self.guild}) # get guild from database
 
-        if not tmp:
-            return tmp
+        if not tmp: # if guild is Not Found
+            return tmp # return None
 
-        return tmp["permissions"]
+        return tmp["permissions"] # return guild's permissions
 
-    async def add_remove_permission(self, permission_name: str):
-        tmp = await guilds.find_one({"_id": self.guild})
+    async def add_remove_permission(self, permission_name: str): # allow or disallow permission
+        tmp = await guilds.find_one({"_id": self.guild}) # get guild
 
-        if not tmp:
-            return
+        if not tmp: # guild is not found
+            return # no process
+        
+        if permission_name in tmp['permissions']: # permission in permissions
+            tmp['permissions'].remove(permission_name) # permission remove
 
-        return await guilds.update_one({"_id": self.guild}, tmp)
+        else: # it's not in a permissions
+            tmp['permissions'].append(permission_name) # add permissions
 
-
-async def check_User(user: Union[discord.Member, discord.User]):
-    data = await users.find_one({"_id": user.id})
-    if data is None:
-        return False
-    else:
-        return True
+        return await guilds.update_one({"_id": self.guild}, tmp) # process allow or disallow permissions update
 
 
-def chunks(lst: list, n: int):
+async def check_User(user: Union[discord.Member, discord.User]): # check User is in Database
+    data = await users.find_one({"_id": user.id}) # Load User from Database
+    if data is None: # is not in DataBase
+        return False # not in
+    else: # else
+        return True # is in
+
+
+def chunks(lst: list, n: int): # split list divide by n
     for i in range(0, len(lst), n):
         yield lst[i : i + n]
 
 
-def ad_help_formater(argments=None, example=None):
+def ad_help_formater(argments=None, example=None): # advenced help formatter
+ 
+    example = example or "{prefix}{command} {argments}" # no example -> default example
+    argments = argments or "" # special argments or nothing
 
-    example = example or "{prefix}{command} {argments}"
-    argments = argments or ""
-
-    return {"ad_help": {"example": example, "argments": argments}}
+    return {"ad_help": {"example": example, "argments": argments}} # return ad_help format
 
 
 async def help_formater(ctx, command):
