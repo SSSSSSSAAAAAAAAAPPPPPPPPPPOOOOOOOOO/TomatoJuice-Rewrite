@@ -21,4 +21,4 @@
 | Working | ❌ | Economy 기능 |
 | Working | ❌ | 디스코드 지원 UI와 어울리는 기능 |
 |  | ❌ | 랜덤 채팅 |
-| Working | ❌ | Language 다국어 지원 |
+| ☑️ | ❌ | Language 다국어 지원 |
